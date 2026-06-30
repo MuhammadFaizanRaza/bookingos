@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Plan } from '@salonos/database';
+import { Plan } from '@bookingos/database';
 import { PrismaService } from '../../database/prisma.service';
 import { StripeService } from '../../stripe/stripe.service';
 

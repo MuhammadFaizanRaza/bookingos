@@ -7,14 +7,14 @@ const intlMiddleware = createMiddleware(routing);
 const RESERVED = new Set(['www', 'app', 'api', 'admin', 'book', 'assets']);
 
 /**
- * Resolves a tenant slug from the request subdomain (e.g. lumiere.salonos.app)
+ * Resolves a tenant slug from the request subdomain (e.g. lumiere.bookingos.app)
  * and forwards it to the app as the `x-tenant-slug` header so the API client
  * can scope requests. Falls back to none on localhost / reserved subdomains.
  */
 function resolveTenantSlug(req: NextRequest): string | null {
   const host = req.headers.get('host')?.split(':')[0] ?? '';
   const parts = host.split('.');
-  // host like <slug>.salonos.app -> at least 3 labels and not reserved
+  // host like <slug>.bookingos.app -> at least 3 labels and not reserved
   if (parts.length >= 3) {
     const sub = parts[0];
     if (sub && !RESERVED.has(sub)) return sub;

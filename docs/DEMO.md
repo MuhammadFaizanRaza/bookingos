@@ -1,6 +1,6 @@
 # Demo Walkthrough
 
-A step-by-step script for demoing SalonOS to a salon or spa prospect. It uses the pre-seeded **"Lumière Beauty Lounge"** demo. Total run time: ~8–10 minutes. Talking points are marked 💬.
+A step-by-step script for demoing BookingOS to a salon or spa prospect. It uses the pre-seeded **"Lumière Beauty Lounge"** demo. Total run time: ~8–10 minutes. Talking points are marked 💬.
 
 > **Goal:** show that one tool runs the salon's whole day — booking, calendar, payments, clients, reports — and that it looks like *their* brand, in *their* language.
 

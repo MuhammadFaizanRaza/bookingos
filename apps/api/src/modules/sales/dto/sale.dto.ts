@@ -12,7 +12,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { SaleItemType } from '@salonos/database';
+import { SaleItemType } from '@bookingos/database';
 
 export class SaleLineDto {
   @ApiProperty({ enum: SaleItemType })

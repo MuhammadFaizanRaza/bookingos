@@ -1,6 +1,6 @@
 <div align="center">
 
-# 💇 SalonOS
+# 💇 BookingOS
 
 ### The all-in-one, multi-tenant platform for salons & spas
 
@@ -17,7 +17,7 @@
 
 ---
 
-SalonOS is a production-grade SaaS that lets a salon or spa run its entire operation from one place — and lets **you** run many salons from one codebase. Each salon gets its own white-labeled booking site, dashboard, currency, timezone, and language, while everything lives in a single shared database with strict per-tenant isolation.
+BookingOS is a production-grade SaaS that lets a salon or spa run its entire operation from one place — and lets **you** run many salons from one codebase. Each salon gets its own white-labeled booking site, dashboard, currency, timezone, and language, while everything lives in a single shared database with strict per-tenant isolation.
 
 It ships with a polished marketing site, a guest-friendly multi-step booking flow, a full owner/staff dashboard, Stripe-powered client payments and SaaS subscription billing, and a fully-seeded demo salon you can show to a prospect in under a minute.
 
@@ -59,9 +59,9 @@ See **[docs/DEMO.md](docs/DEMO.md)** for a guided, sales-ready walkthrough.
 ## 🧱 Tech stack
 
 - **Monorepo** — pnpm workspaces + [Turborepo](https://turbo.build)
-- **API** — `@salonos/api`: [NestJS 11](https://nestjs.com), Prisma 6, JWT auth, Stripe, Swagger at `/docs`, served under `/api/v1` on port **4000**
-- **Web** — `@salonos/web`: [Next.js 15](https://nextjs.org) App Router, React 19, Tailwind CSS + shadcn/ui, next-intl, TanStack Query, Recharts, Stripe.js, on port **3000**
-- **Database package** — `@salonos/database`: Prisma client, a tenant-scoped `forTenant()` extension, and the demo seed
+- **API** — `@bookingos/api`: [NestJS 11](https://nestjs.com), Prisma 6, JWT auth, Stripe, Swagger at `/docs`, served under `/api/v1` on port **4000**
+- **Web** — `@bookingos/web`: [Next.js 15](https://nextjs.org) App Router, React 19, Tailwind CSS + shadcn/ui, next-intl, TanStack Query, Recharts, Stripe.js, on port **3000**
+- **Database package** — `@bookingos/database`: Prisma client, a tenant-scoped `forTenant()` extension, and the demo seed
 - **Data store** — PostgreSQL 16 · **Cache/queues** — Redis 7 (both via Docker Compose)
 - **Payments** — Stripe (PaymentIntents, Connect, Checkout, Customer Portal, webhooks)
 
@@ -74,7 +74,7 @@ See **[docs/DEMO.md](docs/DEMO.md)** for a guided, sales-ready walkthrough.
 ### 1. Clone, configure and bootstrap (Docker path — recommended)
 
 ```bash
-git clone <your-repo-url> SalonOS && cd SalonOS
+git clone <your-repo-url> BookingOS && cd BookingOS
 cp .env.example .env          # defaults already work with Docker
 
 pnpm setup                    # install + docker:up + build db + migrate + seed
@@ -89,8 +89,8 @@ pnpm dev                      # api → :4000   web → :3000
 cp .env.example .env
 # Edit .env → point DATABASE_URL at your Postgres and set REDIS_URL.
 # Create the role/db first, e.g.:
-#   createuser salonos --pwprompt
-#   createdb salonos -O salonos
+#   createuser bookingos --pwprompt
+#   createdb bookingos -O bookingos
 
 pnpm install
 pnpm db:build && pnpm db:migrate && pnpm db:seed
@@ -125,9 +125,9 @@ Comes pre-loaded with 3 staff, 6 services across Hair/Color/Nails, 4 clients, sa
 ## 📁 Project structure
 
 ```
-SalonOS/
+BookingOS/
 ├── apps/
-│   ├── api/                      # @salonos/api — NestJS REST API
+│   ├── api/                      # @bookingos/api — NestJS REST API
 │   │   └── src/
 │   │       ├── auth/             # JWT auth, guards, roles, strategies
 │   │       ├── tenant/           # tenant resolution middleware + decorator
@@ -139,7 +139,7 @@ SalonOS/
 │   │                             #   clients, bookings, products, sales,
 │   │                             #   payments, billing, reports, reviews,
 │   │                             #   public, webhooks
-│   └── web/                      # @salonos/web — Next.js front-end
+│   └── web/                      # @bookingos/web — Next.js front-end
 │       └── src/
 │           ├── app/[locale]/     # marketing, auth, /book, /dashboard/*
 │           ├── components/       # marketing, dashboard, booking, ui (shadcn)
@@ -148,7 +148,7 @@ SalonOS/
 │           ├── lib/              # api client, mock data, stripe, types
 │           └── middleware.ts     # locale + subdomain → x-tenant-slug
 ├── packages/
-│   └── database/                 # @salonos/database
+│   └── database/                 # @bookingos/database
 │       ├── prisma/
 │       │   ├── schema.prisma     # full multi-tenant data model
 │       │   └── seed.ts           # demo salon seed
@@ -193,4 +193,4 @@ pnpm docker:down  # stop them
 
 ## 📄 License
 
-Proprietary — © SalonOS. All rights reserved. Internal/commercial use only unless a separate license is agreed in writing.
+Proprietary — © BookingOS. All rights reserved. Internal/commercial use only unless a separate license is agreed in writing.

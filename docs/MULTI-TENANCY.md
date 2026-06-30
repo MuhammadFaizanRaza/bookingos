@@ -1,6 +1,6 @@
 # Multi-Tenancy
 
-SalonOS is multi-tenant: one deployment serves many independent salons ("tenants"), each with its own users, data, branding, locale, currency and timezone. This document explains the model in depth.
+BookingOS is multi-tenant: one deployment serves many independent salons ("tenants"), each with its own users, data, branding, locale, currency and timezone. This document explains the model in depth.
 
 ---
 
@@ -14,7 +14,7 @@ The `Tenant` model is the root (`packages/database/prisma/schema.prisma`):
 model Tenant {
   id           String       @id @default(cuid())
   name         String
-  slug         String       @unique   // subdomain: <slug>.salonos.app
+  slug         String       @unique   // subdomain: <slug>.bookingos.app
   customDomain String?      @unique
   status       TenantStatus @default(TRIAL)
   plan         Plan         @default(STARTER)
@@ -82,7 +82,7 @@ On the web side, `apps/web/src/middleware.ts` maps the request subdomain to the 
 
 ## 4. Trade-offs vs. other tenancy models
 
-| Model | Isolation | Ops complexity | Cross-tenant queries | Cost / tenant | SalonOS |
+| Model | Isolation | Ops complexity | Cross-tenant queries | Cost / tenant | BookingOS |
 | --- | --- | --- | --- | --- | --- |
 | **Shared DB, row-level `tenantId`** | Logical (app + extension) | Low (one schema, one migration) | Trivial | Lowest | ✅ chosen |
 | **Schema-per-tenant** | Stronger (Postgres schemas) | Medium (N schemas to migrate) | Harder | Medium | upgrade path |
@@ -94,7 +94,7 @@ On the web side, `apps/web/src/middleware.ts` maps the request subdomain to the 
 
 ## 5. Custom domains & subdomains
 
-- **Subdomain:** every tenant is reachable at `<slug>.ROOT_DOMAIN` (e.g. `lumiere.salonos.app`). Requires a wildcard DNS record + wildcard TLS cert (see [SETUP.md](SETUP.md) → production).
+- **Subdomain:** every tenant is reachable at `<slug>.ROOT_DOMAIN` (e.g. `lumiere.bookingos.app`). Requires a wildcard DNS record + wildcard TLS cert (see [SETUP.md](SETUP.md) → production).
 - **Custom domain:** `Tenant.customDomain` is a unique field for salons that want to serve their booking site on their own domain; point that domain at the web app and resolve the tenant by host.
 
 ---

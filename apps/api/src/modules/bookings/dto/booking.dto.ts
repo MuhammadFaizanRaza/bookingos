@@ -10,7 +10,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { AppointmentStatus, BookingSource } from '@salonos/database';
+import { AppointmentStatus, BookingSource } from '@bookingos/database';
 
 /** Converts an ISO string (with or without timezone) to a UTC Date. */
 function toUtcDate({ value }: { value: unknown }): Date {

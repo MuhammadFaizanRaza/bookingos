@@ -9,7 +9,7 @@ import {
   Length,
   MaxLength,
 } from 'class-validator';
-import { Plan } from '@salonos/database';
+import { Plan } from '@bookingos/database';
 
 export class UpdateTenantDto {
   @ApiPropertyOptional({ example: 'Lumière Beauty Lounge' })

@@ -1,26 +1,26 @@
 {
-  "name": "salonos",
+  "name": "bookingos",
   "version": "1.0.0",
   "private": true,
-  "description": "SalonOS — Multi-tenant salon & spa management SaaS (booking, POS, payments, analytics).",
+  "description": "BookingOS — Multi-tenant salon & spa management SaaS (booking, POS, payments, analytics).",
   "packageManager": "pnpm@11.7.0",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "dev": "pnpm --filter @salonos/database build && turbo run dev",
+    "dev": "pnpm --filter @bookingos/database build && turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "db:generate": "pnpm --filter @salonos/database generate",
-    "db:migrate": "pnpm --filter @salonos/database migrate",
-    "db:push": "pnpm --filter @salonos/database push",
-    "db:seed": "pnpm --filter @salonos/database seed",
-    "db:studio": "pnpm --filter @salonos/database studio",
+    "db:generate": "pnpm --filter @bookingos/database generate",
+    "db:migrate": "pnpm --filter @bookingos/database migrate",
+    "db:push": "pnpm --filter @bookingos/database push",
+    "db:seed": "pnpm --filter @bookingos/database seed",
+    "db:studio": "pnpm --filter @bookingos/database studio",
     "docker:up": "docker compose up -d",
     "docker:down": "docker compose down",
-    "setup": "pnpm install && pnpm docker:up && pnpm --filter @salonos/database build && pnpm db:migrate && pnpm db:seed",
-    "db:build": "pnpm --filter @salonos/database build"
+    "setup": "pnpm install && pnpm docker:up && pnpm --filter @bookingos/database build && pnpm db:migrate && pnpm db:seed",
+    "db:build": "pnpm --filter @bookingos/database build"
   },
   "devDependencies": {
     "prettier": "^3.3.3",

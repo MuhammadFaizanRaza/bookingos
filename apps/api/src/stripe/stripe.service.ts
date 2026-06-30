@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Plan } from '@salonos/database';
+import { Plan } from '@bookingos/database';
 import Stripe from 'stripe';
 
 @Injectable()

@@ -13,7 +13,7 @@ import {
   TenantStatus,
   UserStatus,
   type User,
-} from '@salonos/database';
+} from '@bookingos/database';
 import * as bcrypt from 'bcryptjs';
 import { createHash, randomBytes } from 'crypto';
 import { PrismaService } from '../database/prisma.service';

@@ -1,6 +1,6 @@
 # Features
 
-A catalogue of what SalonOS does, grouped by area, with the backing API endpoints (all under `/api/v1`) and web pages (all locale-prefixed `/[locale]/…`). See [API.md](API.md) for full request details and [DEMO.md](DEMO.md) for a guided tour.
+A catalogue of what BookingOS does, grouped by area, with the backing API endpoints (all under `/api/v1`) and web pages (all locale-prefixed `/[locale]/…`). See [API.md](API.md) for full request details and [DEMO.md](DEMO.md) for a guided tour.
 
 ---
 

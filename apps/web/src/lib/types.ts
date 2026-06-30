@@ -1,4 +1,4 @@
-// Shared domain types mirroring the SalonOS API responses.
+// Shared domain types mirroring the BookingOS API responses.
 
 export type Plan = 'STARTER' | 'PRO' | 'BUSINESS';
 

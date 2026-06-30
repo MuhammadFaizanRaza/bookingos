@@ -2,20 +2,20 @@
 
 ## 1. System overview
 
-SalonOS is a pnpm + Turborepo monorepo with two deployable apps and one shared package. The browser talks to a NestJS REST API; the API owns all business logic and is the only thing that touches PostgreSQL, Redis and Stripe.
+BookingOS is a pnpm + Turborepo monorepo with two deployable apps and one shared package. The browser talks to a NestJS REST API; the API owns all business logic and is the only thing that touches PostgreSQL, Redis and Stripe.
 
 ```mermaid
 flowchart LR
   subgraph Client
-    B["Browser / Booking site\n<slug>.salonos.app"]
+    B["Browser / Booking site\n<slug>.bookingos.app"]
   end
 
-  subgraph Web["@salonos/web · Next.js 15 (:3000)"]
+  subgraph Web["@bookingos/web · Next.js 15 (:3000)"]
     MW["middleware.ts\nlocale + subdomain → x-tenant-slug"]
     UI["App Router pages\nmarketing · /book · /dashboard"]
   end
 
-  subgraph API["@salonos/api · NestJS 11 (:4000, /api/v1)"]
+  subgraph API["@bookingos/api · NestJS 11 (:4000, /api/v1)"]
     TM["TenantMiddleware"]
     G["JwtAuthGuard + RolesGuard"]
     SVC["Module services"]
@@ -49,11 +49,11 @@ Browser ──HTTP──> Next.js (web) ──REST /api/v1 + JWT + x-tenant-slug
 
 | Workspace | Package | Responsibility |
 | --- | --- | --- |
-| `apps/api` | `@salonos/api` | REST API, auth, tenancy, business logic, Stripe, Swagger |
-| `apps/web` | `@salonos/web` | Marketing site, booking flow, owner/staff dashboard, i18n |
-| `packages/database` | `@salonos/database` | Prisma schema, generated client, `forTenant()` isolation, seed |
+| `apps/api` | `@bookingos/api` | REST API, auth, tenancy, business logic, Stripe, Swagger |
+| `apps/web` | `@bookingos/web` | Marketing site, booking flow, owner/staff dashboard, i18n |
+| `packages/database` | `@bookingos/database` | Prisma schema, generated client, `forTenant()` isolation, seed |
 
-Turborepo (`turbo.json`) wires task dependencies: `build` depends on upstream `^build`, so `@salonos/database` is generated/compiled before the apps. `dev` is persistent and uncached. `.env` is a global dependency so changes bust the cache.
+Turborepo (`turbo.json`) wires task dependencies: `build` depends on upstream `^build`, so `@bookingos/database` is generated/compiled before the apps. `dev` is persistent and uncached. `.env` is a global dependency so changes bust the cache.
 
 ---
 

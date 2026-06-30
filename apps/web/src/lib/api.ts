@@ -1,4 +1,4 @@
-// Shared API client for SalonOS.
+// Shared API client for BookingOS.
 // - Base URL from NEXT_PUBLIC_API_URL, all routes under /api/v1.
 // - Injects `x-tenant-slug` header and a bearer token when present.
 // - Provides typed helpers for the resources the frontend uses.
@@ -25,8 +25,8 @@ export const DEMO_TENANT_SLUG = 'lumiere';
 // Abort requests that take too long so the UI falls back to mock data quickly.
 const REQUEST_TIMEOUT_MS = 2500;
 
-const TOKEN_KEY = 'salonos.token';
-const REFRESH_KEY = 'salonos.refresh';
+const TOKEN_KEY = 'bookingos.token';
+const REFRESH_KEY = 'bookingos.refresh';
 
 export const tokenStore = {
   get(): string | null {

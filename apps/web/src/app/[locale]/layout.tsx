@@ -22,11 +22,11 @@ const sora = Sora({
 
 export const metadata: Metadata = {
   title: {
-    default: 'SalonOS — The all-in-one platform for modern salons',
-    template: '%s · SalonOS',
+    default: 'BookingOS — The all-in-one platform for modern salons',
+    template: '%s · BookingOS',
   },
   description:
-    'Bookings, payments, clients and reports — beautifully unified. Fill your chairs, delight your clients and grow revenue with SalonOS.',
+    'Bookings, payments, clients and reports — beautifully unified. Fill your chairs, delight your clients and grow revenue with BookingOS.',
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
   ),

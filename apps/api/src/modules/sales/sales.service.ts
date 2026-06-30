@@ -8,7 +8,7 @@ import {
   Prisma,
   SaleItemType,
   SaleStatus,
-} from '@salonos/database';
+} from '@bookingos/database';
 import { TenantService } from '../../database/tenant.service';
 import { add, dec, money, mul, nonNegative, sub } from '../../common/money';
 import {

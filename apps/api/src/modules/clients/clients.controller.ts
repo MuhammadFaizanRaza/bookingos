@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Role } from '@salonos/database';
+import { Role } from '@bookingos/database';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { CurrentTenant } from '../../tenant/current-tenant.decorator';
 import { PaginationDto } from '../../common/dto/pagination.dto';

@@ -1,5 +1,5 @@
 /**
- * SalonOS seed — creates a fully-populated demo salon so the product is
+ * BookingOS seed — creates a fully-populated demo salon so the product is
  * instantly demoable after `pnpm db:seed`.
  *
  * Demo login (owner):  owner@lumiere.demo  /  Passw0rd!
@@ -87,7 +87,7 @@ function at(daysFromNow: number, hour: number, min = 0): Date {
 }
 
 async function main() {
-  console.log('🌱  Seeding SalonOS demo data…');
+  console.log('🌱  Seeding BookingOS demo data…');
 
   // Clean slate (dev only)
   await prisma.$transaction([

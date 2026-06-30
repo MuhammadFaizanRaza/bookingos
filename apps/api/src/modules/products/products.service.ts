@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Prisma } from '@salonos/database';
+import { Prisma } from '@bookingos/database';
 import { TenantService } from '../../database/tenant.service';
 import {
   CreateMovementDto,

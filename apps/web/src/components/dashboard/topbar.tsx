@@ -27,7 +27,7 @@ import { useNotifications } from '@/hooks/use-salon-data';
 import { cn, timeAgo } from '@/lib/utils';
 import { Sidebar } from './sidebar';
 
-const LAST_READ_KEY = 'salonos.notif.lastRead';
+const LAST_READ_KEY = 'bookingos.notif.lastRead';
 
 function getLastRead(): string | null {
   if (typeof window === 'undefined') return null;

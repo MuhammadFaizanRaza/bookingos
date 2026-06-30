@@ -46,7 +46,7 @@ import {
 import { toast } from '@/components/ui/sonner';
 
 // ── localStorage helpers ──────────────────────────────────────────────────────
-const ROLES_STORAGE_KEY = 'salonos.staff-roles';
+const ROLES_STORAGE_KEY = 'bookingos.staff-roles';
 
 function readStoredRoles(): Record<string, Role> {
   if (typeof window === 'undefined') return {};

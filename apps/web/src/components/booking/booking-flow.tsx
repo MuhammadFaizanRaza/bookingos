@@ -748,7 +748,7 @@ function SuccessScreen({
             </Button>
           ) : (
             <Button asChild variant="gradient">
-              <Link href="/">SalonOS</Link>
+              <Link href="/">BookingOS</Link>
             </Button>
           )}
         </div>

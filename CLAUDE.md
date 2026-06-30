@@ -1,4 +1,4 @@
-# SalonOS — Claude Code Reference
+# BookingOS — Claude Code Reference
 
 Multi-tenant salon/spa management SaaS (global). Turborepo + pnpm monorepo.
 
@@ -28,8 +28,9 @@ pnpm lint           # lint all workspaces
 ## Environment (.env.example at root)
 
 Key vars (copy to .env):
+
 ```
-DATABASE_URL=postgresql://salonos:salonos@localhost:5432/salonos?schema=public
+DATABASE_URL=postgresql://bookingos:bookingos@localhost:5432/bookingos?schema=public
 REDIS_URL=redis://localhost:6379
 API_PORT=4000  WEB_PORT=3000
 JWT_ACCESS_SECRET=...  JWT_REFRESH_SECRET=...
@@ -37,7 +38,7 @@ STRIPE_SECRET_KEY=sk_test_xxx  STRIPE_PUBLISHABLE_KEY=pk_test_xxx
 STRIPE_WEBHOOK_SECRET=whsec_xxx
 STRIPE_PRICE_STARTER=price_xxx  STRIPE_PRICE_PRO=price_xxx  STRIPE_PRICE_BUSINESS=price_xxx
 NEXT_PUBLIC_API_URL=http://localhost:4000
-ROOT_DOMAIN=salonos.local
+ROOT_DOMAIN=bookingos.local
 ```
 
 > **Known limitation:** Docker daemon not accessible to this user (not in `docker` group). Run `sudo usermod -aG docker $USER` or point `DATABASE_URL` at an existing Postgres instance.
@@ -51,24 +52,24 @@ ROOT_DOMAIN=salonos.local
 
 ## API modules (apps/api/src/modules/)
 
-| Module | Routes |
-|--------|--------|
-| auth | POST /auth/register, /login, /refresh, /logout, GET /auth/me |
-| tenants | GET/PATCH /tenant |
-| locations | CRUD /locations |
-| staff | CRUD /staff, working hours, time-off |
-| services | CRUD /services, categories |
-| clients | CRUD /clients (CRM, search, tags, loyalty) |
-| bookings | GET/POST /bookings, PATCH /bookings/:id/reschedule |
-| products | CRUD /products (inventory, SKU, stock) |
-| sales | POST /sales (line items, discounts, tips, tax) |
-| payments | POST /payments/intent, /payments/cash, refunds |
-| billing | GET /billing/subscription, POST /billing/checkout, /billing/portal |
-| reports | KPIs, revenue, utilization, staff, low stock, ratings |
-| reviews | CRUD /reviews |
-| public | GET /public/site, /services, /staff, /availability; POST /public/bookings (no auth) |
-| webhooks | POST /webhooks/stripe (signature-verified, idempotent) |
-| messaging | Email/SMS/WhatsApp/push (scaffolded, not fully wired) |
+| Module    | Routes                                                                              |
+| --------- | ----------------------------------------------------------------------------------- |
+| auth      | POST /auth/register, /login, /refresh, /logout, GET /auth/me                        |
+| tenants   | GET/PATCH /tenant                                                                   |
+| locations | CRUD /locations                                                                     |
+| staff     | CRUD /staff, working hours, time-off                                                |
+| services  | CRUD /services, categories                                                          |
+| clients   | CRUD /clients (CRM, search, tags, loyalty)                                          |
+| bookings  | GET/POST /bookings, PATCH /bookings/:id/reschedule                                  |
+| products  | CRUD /products (inventory, SKU, stock)                                              |
+| sales     | POST /sales (line items, discounts, tips, tax)                                      |
+| payments  | POST /payments/intent, /payments/cash, refunds                                      |
+| billing   | GET /billing/subscription, POST /billing/checkout, /billing/portal                  |
+| reports   | KPIs, revenue, utilization, staff, low stock, ratings                               |
+| reviews   | CRUD /reviews                                                                       |
+| public    | GET /public/site, /services, /staff, /availability; POST /public/bookings (no auth) |
+| webhooks  | POST /webhooks/stripe (signature-verified, idempotent)                              |
+| messaging | Email/SMS/WhatsApp/push (scaffolded, not fully wired)                               |
 
 Auth: JWT access token (15m) + rotating refresh (30d). `@Public()` skips auth guard. `@Roles()` enforces role metadata.
 
@@ -78,31 +79,31 @@ Roles: `SUPER_ADMIN | OWNER | MANAGER | STAFF | RECEPTIONIST | CLIENT`
 
 28 models. Key ones:
 
-| Model | Purpose |
-|-------|---------|
-| Tenant | Root org — slug, plan, status, stripeCustomerId |
-| Subscription | Stripe subscription per tenant |
-| User | Identity with role + tenantId |
-| StaffProfile | Staff details, commission, schedule link |
-| WorkingHours | Per-staff, dayOfWeek, startMin/endMin (minutes from midnight) |
-| TimeOff | Staff vacation blocks |
-| Location | Salon branches with timezone override |
-| ServiceCategory | Grouping for services |
-| Service | Bookable service (durationMin, buffers, price, deposit) |
-| Product | Retail inventory (SKU, stockQty, lowStockAt) |
-| InventoryMovement | Stock tracking |
-| Client | CRM contact (tags, loyaltyPoints, marketingOptIn) |
-| Appointment | Booking lifecycle (PENDING→CONFIRMED→CHECKED_IN→IN_PROGRESS→COMPLETED + CANCELLED/NO_SHOW) |
-| AppointmentItem | Per-service line within an appointment |
-| Sale | POS transaction (OPEN/PAID/PARTIALLY_REFUNDED/REFUNDED/VOID) |
-| SaleItem | Sale line (SERVICE or PRODUCT) |
-| Payment | Payment record with Stripe PaymentIntent link |
-| Discount | Promo codes (PERCENT/FIXED, usage limits) |
-| Review | Client feedback (1–5 stars, publishable) |
-| Notification | Queued messages (EMAIL/SMS/WHATSAPP/PUSH) |
-| AuditLog | Activity trail (action, entity, entityId, meta JSON) |
-| RefreshToken | Session management (hashed) |
-| WebhookEvent | Stripe idempotency guard |
+| Model             | Purpose                                                                                    |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| Tenant            | Root org — slug, plan, status, stripeCustomerId                                            |
+| Subscription      | Stripe subscription per tenant                                                             |
+| User              | Identity with role + tenantId                                                              |
+| StaffProfile      | Staff details, commission, schedule link                                                   |
+| WorkingHours      | Per-staff, dayOfWeek, startMin/endMin (minutes from midnight)                              |
+| TimeOff           | Staff vacation blocks                                                                      |
+| Location          | Salon branches with timezone override                                                      |
+| ServiceCategory   | Grouping for services                                                                      |
+| Service           | Bookable service (durationMin, buffers, price, deposit)                                    |
+| Product           | Retail inventory (SKU, stockQty, lowStockAt)                                               |
+| InventoryMovement | Stock tracking                                                                             |
+| Client            | CRM contact (tags, loyaltyPoints, marketingOptIn)                                          |
+| Appointment       | Booking lifecycle (PENDING→CONFIRMED→CHECKED_IN→IN_PROGRESS→COMPLETED + CANCELLED/NO_SHOW) |
+| AppointmentItem   | Per-service line within an appointment                                                     |
+| Sale              | POS transaction (OPEN/PAID/PARTIALLY_REFUNDED/REFUNDED/VOID)                               |
+| SaleItem          | Sale line (SERVICE or PRODUCT)                                                             |
+| Payment           | Payment record with Stripe PaymentIntent link                                              |
+| Discount          | Promo codes (PERCENT/FIXED, usage limits)                                                  |
+| Review            | Client feedback (1–5 stars, publishable)                                                   |
+| Notification      | Queued messages (EMAIL/SMS/WHATSAPP/PUSH)                                                  |
+| AuditLog          | Activity trail (action, entity, entityId, meta JSON)                                       |
+| RefreshToken      | Session management (hashed)                                                                |
+| WebhookEvent      | Stripe idempotency guard                                                                   |
 
 Plans: `STARTER | PRO | BUSINESS` — defined in `packages/database/src/index.ts` and `apps/web/src/lib/plans.ts`
 
@@ -110,20 +111,21 @@ Plans: `STARTER | PRO | BUSINESS` — defined in `packages/database/src/index.ts
 
 App Router with locale prefix `/[locale]/`:
 
-| Route | Purpose |
-|-------|---------|
-| / | Marketing landing (hero, pricing, FAQ) |
-| /login, /signup | Auth |
-| /book | Public multi-step booking (service→staff→slot→details→deposit) |
-| /dashboard/calendar | Appointments calendar |
-| /dashboard/clients | CRM |
-| /dashboard/services | Service + category management |
-| /dashboard/staff | Staff, hours, time-off |
-| /dashboard/pos | POS — sales, line items, payment |
-| /dashboard/reports | Analytics (KPIs, revenue, utilization) |
-| /dashboard/settings | Tenant config, billing portal |
+| Route               | Purpose                                                        |
+| ------------------- | -------------------------------------------------------------- |
+| /                   | Marketing landing (hero, pricing, FAQ)                         |
+| /login, /signup     | Auth                                                           |
+| /book               | Public multi-step booking (service→staff→slot→details→deposit) |
+| /dashboard/calendar | Appointments calendar                                          |
+| /dashboard/clients  | CRM                                                            |
+| /dashboard/services | Service + category management                                  |
+| /dashboard/staff    | Staff, hours, time-off                                         |
+| /dashboard/pos      | POS — sales, line items, payment                               |
+| /dashboard/reports  | Analytics (KPIs, revenue, utilization)                         |
+| /dashboard/settings | Tenant config, billing portal                                  |
 
 Key files:
+
 - `src/lib/api.ts` — Fetch client (injects JWT + x-tenant-slug)
 - `src/lib/mock.ts` — Mock data (fallback when API unreachable)
 - `src/hooks/use-salon-data.ts` — TanStack Query hooks with mock fallback
@@ -137,6 +139,7 @@ i18n: **en / ur / ar** (ur + ar are RTL). Translations at `src/messages/{en,ur,a
 **Done:** All 16 API modules, Stripe (PaymentIntents, Connect, Checkout, Portal, webhooks), marketing landing, auth, public booking, dashboard shell, i18n, availability algorithm, POS, inventory, reports, CRM.
 
 **Partial / scaffolded:**
+
 - Web dashboard falls back to mock data where API is not wired
 - Stripe Elements simulated until real keys configured
 - Notifications (email/SMS/push) — models exist, sending not wired
@@ -145,6 +148,7 @@ i18n: **en / ur / ar** (ur + ar are RTL). Translations at `src/messages/{en,ur,a
 - File uploads — S3 env vars exist, pipeline not built
 
 **Roadmap (priority order):**
+
 1. Wire all dashboard screens to live API endpoints
 2. Live Stripe Elements + deposits
 3. Email/SMS appointment reminders (Twilio)

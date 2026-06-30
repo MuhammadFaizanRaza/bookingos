@@ -1,4 +1,4 @@
-import { Prisma } from '@salonos/database';
+import { Prisma } from '@bookingos/database';
 
 /**
  * Decimal-safe money helpers built on Prisma.Decimal (decimal.js under the

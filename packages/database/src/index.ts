@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 // Re-export all Prisma types & enums so apps import from one place:
-//   import { Role, AppointmentStatus, type Tenant } from '@salonos/database';
+//   import { Role, AppointmentStatus, type Tenant } from '@bookingos/database';
 export * from '@prisma/client';
 
 // Singleton — avoids exhausting DB connections during dev hot-reload.

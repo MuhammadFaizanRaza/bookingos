@@ -70,7 +70,7 @@ export function SiteFooter() {
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-6 text-sm text-muted-foreground sm:flex-row">
           <p>
-            © {new Date().getFullYear()} SalonOS. {t('rights')}
+            © {new Date().getFullYear()} BookingOS. {t('rights')}
           </p>
           <p className="flex items-center gap-1.5">
             Made with care for salons worldwide.

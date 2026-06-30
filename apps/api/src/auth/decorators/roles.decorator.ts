@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import type { Role } from '@salonos/database';
+import type { Role } from '@bookingos/database';
 
 export const ROLES_KEY = 'roles';
 

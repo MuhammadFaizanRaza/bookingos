@@ -15,7 +15,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { Role } from '@salonos/database';
+import { Role } from '@bookingos/database';
 
 export class CreateStaffDto {
   @ApiProperty({ example: 'Amir Khan', description: 'Staff member full name' })

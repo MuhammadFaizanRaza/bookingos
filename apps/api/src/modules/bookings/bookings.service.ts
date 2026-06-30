@@ -10,7 +10,7 @@ import {
   Prisma,
   Role,
   type Service,
-} from '@salonos/database';
+} from '@bookingos/database';
 import { TenantService } from '../../database/tenant.service';
 import { NotificationService } from '../../messaging/notification.service';
 import { add } from '../../common/money';

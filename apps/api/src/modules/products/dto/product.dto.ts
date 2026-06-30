@@ -10,7 +10,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import { InventoryMovementType } from '@salonos/database';
+import { InventoryMovementType } from '@bookingos/database';
 
 export class CreateProductDto {
   @ApiProperty({ example: 'Argan Repair Shampoo' })

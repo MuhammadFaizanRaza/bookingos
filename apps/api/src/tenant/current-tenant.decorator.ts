@@ -3,7 +3,7 @@ import {
   createParamDecorator,
   ExecutionContext,
 } from '@nestjs/common';
-import type { Tenant } from '@salonos/database';
+import type { Tenant } from '@bookingos/database';
 import type { RequestWithTenant } from '../common/types';
 
 /**

@@ -21,7 +21,7 @@ export default function GlobalNotFound() {
           <h1 style={{ fontSize: '3rem', fontWeight: 700 }}>404</h1>
           <p style={{ color: '#666' }}>This page could not be found.</p>
           <Link href="/en" style={{ color: '#7C3AED', fontWeight: 600 }}>
-            Go to SalonOS
+            Go to BookingOS
           </Link>
         </div>
       </body>

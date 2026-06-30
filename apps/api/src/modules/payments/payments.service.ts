@@ -9,7 +9,7 @@ import {
   PaymentStatus,
   Prisma,
   SaleStatus,
-} from '@salonos/database';
+} from '@bookingos/database';
 import type Stripe from 'stripe';
 import { PrismaService } from '../../database/prisma.service';
 import { TenantService } from '../../database/tenant.service';

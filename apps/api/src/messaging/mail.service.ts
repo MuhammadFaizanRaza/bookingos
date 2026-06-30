@@ -19,7 +19,7 @@ export class MailService {
 
   constructor(config: ConfigService) {
     this.from =
-      config.get<string>('MAIL_FROM') ?? 'SalonOS <no-reply@salonos.app>';
+      config.get<string>('MAIL_FROM') ?? 'BookingOS <no-reply@bookingos.app>';
   }
 
   async send(message: MailMessage): Promise<void> {

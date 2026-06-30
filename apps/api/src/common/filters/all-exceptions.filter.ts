@@ -6,7 +6,7 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import { Prisma } from '@salonos/database';
+import { Prisma } from '@bookingos/database';
 import type { Request, Response } from 'express';
 
 /**

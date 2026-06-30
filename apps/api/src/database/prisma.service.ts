@@ -1,9 +1,9 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { prisma } from '@salonos/database';
+import { prisma } from '@bookingos/database';
 
 /**
  * Thin wrapper exposing the shared PrismaClient singleton from
- * `@salonos/database` as an injectable Nest provider.
+ * `@bookingos/database` as an injectable Nest provider.
  *
  * Use this ONLY for platform-level / cross-tenant data (Tenant lookups,
  * RefreshToken, WebhookEvent, Subscription). For tenant-owned data always

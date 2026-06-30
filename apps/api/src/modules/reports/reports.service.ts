@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, SaleStatus } from '@salonos/database';
+import { Prisma, SaleStatus } from '@bookingos/database';
 import { PrismaService } from '../../database/prisma.service';
 import { TenantService } from '../../database/tenant.service';
 import { add, dec } from '../../common/money';

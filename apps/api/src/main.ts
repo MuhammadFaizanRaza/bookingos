@@ -56,7 +56,7 @@ async function bootstrap(): Promise<void> {
 
   // --- Swagger ------------------------------------------------------------
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('SalonOS API')
+    .setTitle('BookingOS API')
     .setDescription(
       'Multi-tenant salon management API. Send the x-tenant-slug header (or use a tenant subdomain) for tenant-scoped routes.',
     )
@@ -76,7 +76,7 @@ async function bootstrap(): Promise<void> {
   await app.listen(port);
 
   // eslint-disable-next-line no-console
-  console.log(`🚀 SalonOS API on http://localhost:${port} (docs: /docs)`);
+  console.log(`🚀 BookingOS API on http://localhost:${port} (docs: /docs)`);
 }
 
 void bootstrap();

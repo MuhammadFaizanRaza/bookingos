@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Role, SaleStatus } from '@salonos/database';
+import { Role, SaleStatus } from '@bookingos/database';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { CurrentTenant } from '../../tenant/current-tenant.decorator';
 import { SalesService } from './sales.service';

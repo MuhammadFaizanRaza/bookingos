@@ -45,7 +45,7 @@ interface SaleRecord extends ReceiptData {
 }
 
 const TAX_RATE = 0.08;
-const SALES_KEY = 'salonos.sales';
+const SALES_KEY = 'bookingos.sales';
 
 function loadSales(): SaleRecord[] {
   if (typeof window === 'undefined') return [];
@@ -186,7 +186,7 @@ export default function PosPage() {
 
   async function checkout() {
     const receipt: ReceiptData = {
-      salonName: tenant?.name ?? 'SalonOS',
+      salonName: tenant?.name ?? 'BookingOS',
       customerName: customer?.name ?? t('walkIn'),
       lines: cart.map((i) => ({
         name: i.service.name,

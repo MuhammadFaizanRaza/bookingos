@@ -127,7 +127,7 @@ export function SalonFooter({ salon, onBookNow }: SalonFooterProps) {
 
         <div className="mt-10 border-t pt-6 text-center text-xs text-muted-foreground">
           © {year} {salon.name}. All rights reserved. &nbsp;·&nbsp; Powered by{' '}
-          <span className="font-medium text-foreground">SalonOS</span>
+          <span className="font-medium text-foreground">BookingOS</span>
         </div>
       </div>
     </footer>

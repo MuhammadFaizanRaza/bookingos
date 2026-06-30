@@ -1,4 +1,4 @@
-import type { Tenant, Role } from '@salonos/database';
+import type { Tenant, Role } from '@bookingos/database';
 import type { Request } from 'express';
 
 export interface AuthUser {

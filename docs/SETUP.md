@@ -37,14 +37,14 @@ Everything reads from the **monorepo-root `.env`**:
 | Variable | Purpose |
 | --- | --- |
 | `POSTGRES_USER` / `POSTGRES_PASSWORD` / `POSTGRES_DB` | Credentials Docker Compose uses to create the Postgres container |
-| `DATABASE_URL` | Prisma connection string. Default: `postgresql://salonos:salonos@localhost:5432/salonos?schema=public` |
+| `DATABASE_URL` | Prisma connection string. Default: `postgresql://bookingos:bookingos@localhost:5432/bookingos?schema=public` |
 | `REDIS_URL` | Redis connection (`redis://localhost:6379`) |
 | `API_PORT` | API port (default `4000`) |
 | `NODE_ENV` | `development` / `production` |
 | `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` | **Generate strong secrets in prod:** `openssl rand -hex 32` |
 | `JWT_ACCESS_TTL` / `JWT_REFRESH_TTL` | Token lifetimes (default `15m` / `30d`) |
 | `API_PUBLIC_URL` | Public base URL of the API (used in emails/webhooks) |
-| `ROOT_DOMAIN` | Root domain for subdomain-based tenant resolution (e.g. `salonos.app`) |
+| `ROOT_DOMAIN` | Root domain for subdomain-based tenant resolution (e.g. `bookingos.app`) |
 | `RESERVED_SUBDOMAINS` | Comma-separated subdomains that can never be a tenant (`www,app,api,admin,book,assets`) |
 | `STRIPE_SECRET_KEY` / `STRIPE_PUBLISHABLE_KEY` | Stripe API keys |
 | `STRIPE_WEBHOOK_SECRET` | Webhook signing secret (`whsec_…`) |
@@ -79,7 +79,7 @@ pnpm dev      # api on :4000, web on :3000
 ```
 pnpm install
 pnpm docker:up                                  # docker compose up -d
-pnpm --filter @salonos/database build           # prisma generate + tsc
+pnpm --filter @bookingos/database build           # prisma generate + tsc
 pnpm db:migrate                                  # prisma migrate dev
 pnpm db:seed                                     # demo salon
 ```
@@ -88,11 +88,11 @@ pnpm db:seed                                     # demo salon
 
 ### Option B — Existing PostgreSQL / Redis (no Docker)
 
-1. Create the role and database (defaults expect `salonos`/`salonos` on `localhost:5432`):
+1. Create the role and database (defaults expect `bookingos`/`bookingos` on `localhost:5432`):
 
    ```bash
-   createuser salonos --pwprompt        # set password: salonos
-   createdb salonos -O salonos
+   createuser bookingos --pwprompt        # set password: bookingos
+   createdb bookingos -O bookingos
    ```
 
    …or point `DATABASE_URL` and `REDIS_URL` in `.env` at your own instances.
@@ -101,7 +101,7 @@ pnpm db:seed                                     # demo salon
 
    ```bash
    pnpm install
-   pnpm db:build      # prisma generate + compile @salonos/database
+   pnpm db:build      # prisma generate + compile @bookingos/database
    pnpm db:migrate    # apply migrations
    pnpm db:seed       # demo salon
    pnpm dev
@@ -123,7 +123,7 @@ pnpm db:seed                                     # demo salon
 
 ## 4. Stripe setup
 
-SalonOS uses Stripe for **two distinct things**:
+BookingOS uses Stripe for **two distinct things**:
 
 1. **Salon sales** — clients pay the salon for services/products (PaymentIntents; via **Stripe Connect** destination charges when the tenant has a connected account).
 2. **SaaS subscription billing** — salons pay *you* for their plan (Checkout + Customer Portal + webhooks).
@@ -191,7 +191,7 @@ Both are optional; the app runs without them. See [ROADMAP.md](ROADMAP.md) for w
 
 ```bash
 pnpm install --frozen-lockfile
-pnpm db:build          # generate Prisma client + compile @salonos/database
+pnpm db:build          # generate Prisma client + compile @bookingos/database
 pnpm build             # turbo builds both api (dist/) and web (.next/)
 ```
 
@@ -200,16 +200,16 @@ pnpm build             # turbo builds both api (dist/) and web (.next/)
 Use **`migrate deploy`** (never `migrate dev`) in production:
 
 ```bash
-pnpm --filter @salonos/database migrate:deploy
+pnpm --filter @bookingos/database migrate:deploy
 ```
 
 ### Run
 
 ```bash
 # API
-node apps/api/dist/main          # or: pnpm --filter @salonos/api start
+node apps/api/dist/main          # or: pnpm --filter @bookingos/api start
 # Web
-pnpm --filter @salonos/web start # next start -p 3000
+pnpm --filter @bookingos/web start # next start -p 3000
 ```
 
 ### Production environment
@@ -228,7 +228,7 @@ Put the web (`:3000`) and API (`:4000`) behind a reverse proxy (Nginx / Caddy / 
 
 ### Wildcard subdomain DNS (for tenants)
 
-Tenants are reachable at `<slug>.ROOT_DOMAIN` (e.g. `lumiere.salonos.app`). Create a **wildcard DNS record** `*.yourdomain → web app` and a **wildcard TLS certificate** (e.g. via Let's Encrypt DNS-01 or your platform's managed certs). The web middleware extracts the subdomain → `x-tenant-slug`, and the API resolves the tenant from it. Custom domains map to `Tenant.customDomain`.
+Tenants are reachable at `<slug>.ROOT_DOMAIN` (e.g. `lumiere.bookingos.app`). Create a **wildcard DNS record** `*.yourdomain → web app` and a **wildcard TLS certificate** (e.g. via Let's Encrypt DNS-01 or your platform's managed certs). The web middleware extracts the subdomain → `x-tenant-slug`, and the API resolves the tenant from it. Custom domains map to `Tenant.customDomain`.
 
 ### Container / PaaS suggestions
 

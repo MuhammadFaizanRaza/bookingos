@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { BookingSource, Prisma } from '@salonos/database';
+import { BookingSource, Prisma } from '@bookingos/database';
 import { TenantService } from '../../database/tenant.service';
 import { PrismaService } from '../../database/prisma.service';
 import { BookingsService } from '../bookings/bookings.service';

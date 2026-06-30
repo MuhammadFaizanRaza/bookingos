@@ -1,5 +1,5 @@
 // ============================================================================
-//  SalonOS — Prisma schema
+//  BookingOS — Prisma schema
 //  Multi-tenant model: shared database, row-level isolation via `tenantId`.
 //  Every tenant-owned table carries `tenantId` and is queried through a
 //  tenant-scoped Prisma client (see packages/database/src/tenant.ts).
@@ -140,7 +140,7 @@ enum NotificationStatus {
 model Tenant {
   id           String       @id @default(cuid())
   name         String
-  slug         String       @unique // subdomain: <slug>.salonos.app
+  slug         String       @unique // subdomain: <slug>.bookingos.app
   customDomain String?      @unique
   status       TenantStatus @default(TRIAL)
   plan         Plan         @default(STARTER)

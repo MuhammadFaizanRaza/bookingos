@@ -3,7 +3,7 @@ import {
   NotificationChannel,
   NotificationStatus,
   Prisma,
-} from '@salonos/database';
+} from '@bookingos/database';
 import { TenantService } from '../database/tenant.service';
 import { MailService } from './mail.service';
 

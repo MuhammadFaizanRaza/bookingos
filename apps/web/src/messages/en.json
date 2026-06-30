@@ -1,6 +1,6 @@
 {
   "brand": {
-    "name": "SalonOS",
+    "name": "BookingOS",
     "tagline": "Run a beautiful salon. Effortlessly."
   },
   "nav": {
@@ -163,7 +163,7 @@
   },
   "cta": {
     "title": "Ready to fill your chairs?",
-    "subtitle": "Join thousands of salons growing with SalonOS. Start your free trial today.",
+    "subtitle": "Join thousands of salons growing with BookingOS. Start your free trial today.",
     "button": "Get started free"
   },
   "footer": {
@@ -188,7 +188,7 @@
     "signupSubtitle": "Start your 14-day free trial. No card needed.",
     "salonName": "Salon name",
     "slug": "Booking address",
-    "slugHint": ".salonos.app",
+    "slugHint": ".bookingos.app",
     "ownerName": "Your name",
     "email": "Email",
     "password": "Password",
@@ -270,7 +270,7 @@
     "logout": "Log out",
     "upgrade": {
       "title": "Choose your plan",
-      "subtitle": "Upgrade to unlock more of SalonOS.",
+      "subtitle": "Upgrade to unlock more of BookingOS.",
       "current": "Current plan",
       "perMonth": "/mo",
       "upgradeTo": "Upgrade to {plan}",

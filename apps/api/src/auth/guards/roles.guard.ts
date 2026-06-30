@@ -5,7 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import type { Role } from '@salonos/database';
+import type { Role } from '@bookingos/database';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 import type { RequestWithTenant } from '../../common/types';
 
