@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "features": "Funktionen",
+    "pricing": "Preise",
+    "howItWorks": "So funktioniert's",
+    "testimonials": "Bewertungen",
+    "faq": "FAQ",
+    "login": "Anmelden",
+    "signup": "Kostenlos starten",
+    "bookNow": "Jetzt buchen",
+    "dashboard": "Dashboard"
+  },
+  "hero": {
+    "badge": "Neu · KI-gestützte Terminplanung",
+    "title": "Die All-in-One-Plattform, die Ihr Salon verdient",
+    "subtitle": "Buchungen, Zahlungen, Kunden und Berichte — wunderschön vereint. Füllen Sie Ihre Stühle, begeistern Sie Ihre Kunden und steigern Sie Ihren Umsatz ohne den Aufwand.",
+    "ctaPrimary": "14 Tage kostenlos testen",
+    "ctaSecondary": "Live-Demo ansehen",
+    "noCard": "Keine Kreditkarte erforderlich"
+  },
+  "pricing": {
+    "cta": "Kostenlose Testversion starten",
+    "ctaBusiness": "Vertrieb kontaktieren",
+    "starter": { "name": "Starter" },
+    "pro": { "name": "Pro" },
+    "business": { "name": "Business" }
+  },
+  "auth": {
+    "loginTitle": "Willkommen zurück",
+    "loginSubtitle": "Melden Sie sich bei Ihrem Salon-Dashboard an.",
+    "signupTitle": "Erstellen Sie Ihren Salon",
+    "signupSubtitle": "Starten Sie Ihre 14-tägige kostenlose Testphase. Keine Karte nötig.",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "loginButton": "Anmelden",
+    "signupButton": "Salon erstellen",
+    "noAccount": "Sie haben noch kein Konto?",
+    "haveAccount": "Sie haben bereits ein Konto?",
+    "signupLink": "Registrieren",
+    "loginLink": "Anmelden"
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Übersicht",
+      "calendar": "Kalender",
+      "clients": "Kunden",
+      "services": "Leistungen",
+      "staff": "Personal",
+      "pos": "Verkauf / Kasse",
+      "reports": "Berichte",
+      "settings": "Einstellungen"
+    },
+    "logout": "Abmelden"
+  },
+  "common": {
+    "loading": "Wird geladen…",
+    "error": "Etwas ist schiefgelaufen.",
+    "retry": "Erneut versuchen"
+  }
+}

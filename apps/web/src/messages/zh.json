@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "features": "功能",
+    "pricing": "价格",
+    "howItWorks": "运作方式",
+    "testimonials": "评价",
+    "faq": "常见问题",
+    "login": "登录",
+    "signup": "免费开始",
+    "bookNow": "立即预约",
+    "dashboard": "仪表板"
+  },
+  "hero": {
+    "badge": "全新 · AI 辅助排程",
+    "title": "您的沙龙值得拥有的一体化平台",
+    "subtitle": "预约、支付、客户和报告——完美统一。坐满您的座位，取悦您的客户，无需繁琐工作即可增加收入。",
+    "ctaPrimary": "开始 14 天免费试用",
+    "ctaSecondary": "观看在线演示",
+    "noCard": "无需信用卡"
+  },
+  "pricing": {
+    "cta": "开始免费试用",
+    "ctaBusiness": "联系销售",
+    "starter": { "name": "入门版" },
+    "pro": { "name": "专业版" },
+    "business": { "name": "企业版" }
+  },
+  "auth": {
+    "loginTitle": "欢迎回来",
+    "loginSubtitle": "登录您的沙龙仪表板。",
+    "signupTitle": "创建您的沙龙",
+    "signupSubtitle": "开始您的 14 天免费试用。无需信用卡。",
+    "email": "电子邮箱",
+    "password": "密码",
+    "loginButton": "登录",
+    "signupButton": "创建沙龙",
+    "noAccount": "还没有账户？",
+    "haveAccount": "已有账户？",
+    "signupLink": "注册",
+    "loginLink": "登录"
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "概览",
+      "calendar": "日历",
+      "clients": "客户",
+      "services": "服务",
+      "staff": "员工",
+      "pos": "销售 / POS",
+      "reports": "报告",
+      "settings": "设置"
+    },
+    "logout": "退出登录"
+  },
+  "common": {
+    "loading": "加载中…",
+    "error": "出了点问题。",
+    "retry": "重试"
+  }
+}

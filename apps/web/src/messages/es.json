@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "features": "Funciones",
+    "pricing": "Precios",
+    "howItWorks": "Cómo funciona",
+    "testimonials": "Reseñas",
+    "faq": "Preguntas frecuentes",
+    "login": "Iniciar sesión",
+    "signup": "Empezar gratis",
+    "bookNow": "Reservar ahora",
+    "dashboard": "Panel"
+  },
+  "hero": {
+    "badge": "Nuevo · Programación asistida por IA",
+    "title": "La plataforma todo en uno que tu salón merece",
+    "subtitle": "Reservas, pagos, clientes e informes — unificados con elegancia. Llena tus sillones, deleita a tus clientes y aumenta tus ingresos sin el trabajo tedioso.",
+    "ctaPrimary": "Prueba gratis de 14 días",
+    "ctaSecondary": "Ver una demo en vivo",
+    "noCard": "No se requiere tarjeta de crédito"
+  },
+  "pricing": {
+    "cta": "Empezar prueba gratis",
+    "ctaBusiness": "Hablar con ventas",
+    "starter": { "name": "Inicial" },
+    "pro": { "name": "Pro" },
+    "business": { "name": "Empresa" }
+  },
+  "auth": {
+    "loginTitle": "Bienvenido de nuevo",
+    "loginSubtitle": "Inicia sesión en el panel de tu salón.",
+    "signupTitle": "Crea tu salón",
+    "signupSubtitle": "Comienza tu prueba gratis de 14 días. Sin tarjeta.",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "loginButton": "Iniciar sesión",
+    "signupButton": "Crear salón",
+    "noAccount": "¿No tienes una cuenta?",
+    "haveAccount": "¿Ya tienes una cuenta?",
+    "signupLink": "Registrarse",
+    "loginLink": "Iniciar sesión"
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Resumen",
+      "calendar": "Calendario",
+      "clients": "Clientes",
+      "services": "Servicios",
+      "staff": "Personal",
+      "pos": "Ventas / TPV",
+      "reports": "Informes",
+      "settings": "Ajustes"
+    },
+    "logout": "Cerrar sesión"
+  },
+  "common": {
+    "loading": "Cargando…",
+    "error": "Algo salió mal.",
+    "retry": "Reintentar"
+  }
+}

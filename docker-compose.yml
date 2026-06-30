@@ -1,0 +1,41 @@
+# ============================================================================
+#  SalonOS — local development infrastructure
+#  Brings up PostgreSQL + Redis. App services (api/web) run via `pnpm dev`.
+#  Production compose lives in docs/SETUP.md.
+# ============================================================================
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: salonos-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-salonos}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-salonos}
+      POSTGRES_DB: ${POSTGRES_DB:-salonos}
+    ports:
+      - "5432:5432"
+    volumes:
+      - salonos_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-salonos}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: salonos-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - salonos_redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  salonos_pgdata:
+  salonos_redisdata:

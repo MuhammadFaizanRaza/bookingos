@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "features": "Özellikler",
+    "pricing": "Fiyatlandırma",
+    "howItWorks": "Nasıl çalışır",
+    "testimonials": "Yorumlar",
+    "faq": "SSS",
+    "login": "Giriş yap",
+    "signup": "Ücretsiz başla",
+    "bookNow": "Hemen randevu al",
+    "dashboard": "Panel"
+  },
+  "hero": {
+    "badge": "Yeni · Yapay zeka destekli planlama",
+    "title": "Salonunuzun hak ettiği hepsi bir arada platform",
+    "subtitle": "Randevular, ödemeler, müşteriler ve raporlar — zarif bir şekilde birleştirildi. Koltuklarınızı doldurun, müşterilerinizi mutlu edin ve zahmetsizce gelirinizi artırın.",
+    "ctaPrimary": "14 günlük ücretsiz denemeyi başlat",
+    "ctaSecondary": "Canlı demo izle",
+    "noCard": "Kredi kartı gerekmez"
+  },
+  "pricing": {
+    "cta": "Ücretsiz denemeyi başlat",
+    "ctaBusiness": "Satış ekibiyle görüş",
+    "starter": { "name": "Başlangıç" },
+    "pro": { "name": "Pro" },
+    "business": { "name": "İşletme" }
+  },
+  "auth": {
+    "loginTitle": "Tekrar hoş geldiniz",
+    "loginSubtitle": "Salon panelinize giriş yapın.",
+    "signupTitle": "Salonunuzu oluşturun",
+    "signupSubtitle": "14 günlük ücretsiz denemenizi başlatın. Kart gerekmez.",
+    "email": "E-posta",
+    "password": "Parola",
+    "loginButton": "Giriş yap",
+    "signupButton": "Salon oluştur",
+    "noAccount": "Hesabınız yok mu?",
+    "haveAccount": "Zaten hesabınız var mı?",
+    "signupLink": "Kayıt ol",
+    "loginLink": "Giriş yap"
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Genel bakış",
+      "calendar": "Takvim",
+      "clients": "Müşteriler",
+      "services": "Hizmetler",
+      "staff": "Personel",
+      "pos": "Satış / POS",
+      "reports": "Raporlar",
+      "settings": "Ayarlar"
+    },
+    "logout": "Çıkış yap"
+  },
+  "common": {
+    "loading": "Yükleniyor…",
+    "error": "Bir şeyler ters gitti.",
+    "retry": "Yeniden dene"
+  }
+}

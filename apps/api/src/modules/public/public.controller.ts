@@ -1,0 +1,63 @@
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Public } from '../../auth/decorators/public.decorator';
+import { CurrentTenant } from '../../tenant/current-tenant.decorator';
+import { PublicService } from './public.service';
+import { PublicBookingDto } from './dto/public-booking.dto';
+import { AvailabilityQueryDto } from '../bookings/dto/booking.dto';
+
+@ApiTags('public')
+@Public()
+@Controller('public')
+export class PublicController {
+  constructor(private readonly publicSvc: PublicService) {}
+
+  @Get('site')
+  @ApiOperation({ summary: 'Booking-site branding, locale & locations' })
+  site(@CurrentTenant() tenantId: string) {
+    return this.publicSvc.getSite(tenantId);
+  }
+
+  @Get('services')
+  @ApiOperation({ summary: 'Online-bookable services' })
+  services(@CurrentTenant() tenantId: string) {
+    return this.publicSvc.getServices(tenantId);
+  }
+
+  @Get('staff')
+  @ApiOperation({ summary: 'Bookable staff (optionally for a service)' })
+  @ApiQuery({ name: 'serviceId', required: false })
+  staff(
+    @CurrentTenant() tenantId: string,
+    @Query('serviceId') serviceId?: string,
+  ) {
+    return this.publicSvc.getStaff(tenantId, serviceId);
+  }
+
+  @Get('availability')
+  @ApiOperation({ summary: 'Free slots for a service on a date' })
+  availability(
+    @CurrentTenant() tenantId: string,
+    @Query() query: AvailabilityQueryDto,
+  ) {
+    return this.publicSvc.getAvailability(tenantId, query);
+  }
+
+  @Get('locations')
+  @ApiOperation({ summary: 'Active salon locations' })
+  locations(@CurrentTenant() tenantId: string) {
+    return this.publicSvc.getLocations(tenantId);
+  }
+
+  @Get('reviews')
+  @ApiOperation({ summary: 'Published reviews' })
+  reviews(@CurrentTenant() tenantId: string) {
+    return this.publicSvc.getReviews(tenantId);
+  }
+
+  @Post('bookings')
+  @ApiOperation({ summary: 'Create a guest booking (find-or-create client)' })
+  book(@CurrentTenant() tenantId: string, @Body() dto: PublicBookingDto) {
+    return this.publicSvc.createBooking(tenantId, dto);
+  }
+}

@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 8%;
+
+    --primary: 262 83% 58%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 270 40% 96%;
+    --secondary-foreground: 262 60% 30%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+
+    --accent: 291 64% 96%;
+    --accent-foreground: 291 70% 35%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 262 83% 58%;
+
+    --radius: 0.85rem;
+  }
+
+  .dark {
+    --background: 240 14% 6%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 12% 9%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 12% 9%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 262 83% 66%;
+    --primary-foreground: 240 14% 6%;
+
+    --secondary: 263 30% 18%;
+    --secondary-foreground: 270 60% 92%;
+
+    --muted: 240 8% 16%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 291 40% 20%;
+    --accent-foreground: 291 70% 90%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 8% 18%;
+    --input: 240 8% 18%;
+    --ring: 262 83% 66%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'rlig' 1, 'calt' 1, 'ss01' 1;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-brand-gradient bg-clip-text text-transparent;
+  }
+  .glass {
+    @apply border border-white/20 bg-white/70 backdrop-blur-xl dark:border-white/10 dark:bg-white/5;
+  }
+  .grid-pattern {
+    background-image:
+      linear-gradient(to right, hsl(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 75%);
+  }
+}
+
+/* RTL niceties */
+[dir='rtl'] .ltr-flip {
+  transform: scaleX(-1);
+}
+
+/* Print-only receipt */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-receipt,
+  .print-receipt * {
+    visibility: visible;
+  }
+  .print-receipt {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    padding: 24px;
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "features": "Recursos",
+    "pricing": "Preços",
+    "howItWorks": "Como funciona",
+    "testimonials": "Avaliações",
+    "faq": "Perguntas frequentes",
+    "login": "Entrar",
+    "signup": "Começar grátis",
+    "bookNow": "Reservar agora",
+    "dashboard": "Painel"
+  },
+  "hero": {
+    "badge": "Novo · Agendamento assistido por IA",
+    "title": "A plataforma tudo-em-um que o seu salão merece",
+    "subtitle": "Reservas, pagamentos, clientes e relatórios — lindamente unificados. Encha as suas cadeiras, encante os seus clientes e aumente a receita sem o trabalho enfadonho.",
+    "ctaPrimary": "Teste grátis de 14 dias",
+    "ctaSecondary": "Ver uma demonstração ao vivo",
+    "noCard": "Não é necessário cartão de crédito"
+  },
+  "pricing": {
+    "cta": "Começar teste grátis",
+    "ctaBusiness": "Falar com vendas",
+    "starter": { "name": "Inicial" },
+    "pro": { "name": "Pro" },
+    "business": { "name": "Empresa" }
+  },
+  "auth": {
+    "loginTitle": "Bem-vindo de volta",
+    "loginSubtitle": "Entre no painel do seu salão.",
+    "signupTitle": "Crie o seu salão",
+    "signupSubtitle": "Comece o seu teste grátis de 14 dias. Sem cartão.",
+    "email": "E-mail",
+    "password": "Palavra-passe",
+    "loginButton": "Entrar",
+    "signupButton": "Criar salão",
+    "noAccount": "Não tem uma conta?",
+    "haveAccount": "Já tem uma conta?",
+    "signupLink": "Registar",
+    "loginLink": "Entrar"
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Visão geral",
+      "calendar": "Calendário",
+      "clients": "Clientes",
+      "services": "Serviços",
+      "staff": "Equipa",
+      "pos": "Vendas / PDV",
+      "reports": "Relatórios",
+      "settings": "Definições"
+    },
+    "logout": "Sair"
+  },
+  "common": {
+    "loading": "A carregar…",
+    "error": "Algo correu mal.",
+    "retry": "Tentar novamente"
+  }
+}

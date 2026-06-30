@@ -1,0 +1,60 @@
+{
+  "nav": {
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "howItWorks": "Comment ça marche",
+    "testimonials": "Avis",
+    "faq": "FAQ",
+    "login": "Se connecter",
+    "signup": "Commencer gratuitement",
+    "bookNow": "Réserver",
+    "dashboard": "Tableau de bord"
+  },
+  "hero": {
+    "badge": "Nouveau · Planification assistée par IA",
+    "title": "La plateforme tout-en-un que votre salon mérite",
+    "subtitle": "Réservations, paiements, clients et rapports — élégamment réunis. Remplissez vos fauteuils, ravissez vos clients et augmentez vos revenus sans la corvée.",
+    "ctaPrimary": "Essai gratuit de 14 jours",
+    "ctaSecondary": "Voir une démo en direct",
+    "noCard": "Aucune carte bancaire requise"
+  },
+  "pricing": {
+    "cta": "Commencer l'essai gratuit",
+    "ctaBusiness": "Contacter le service commercial",
+    "starter": { "name": "Débutant" },
+    "pro": { "name": "Pro" },
+    "business": { "name": "Entreprise" }
+  },
+  "auth": {
+    "loginTitle": "Bon retour",
+    "loginSubtitle": "Connectez-vous au tableau de bord de votre salon.",
+    "signupTitle": "Créez votre salon",
+    "signupSubtitle": "Commencez votre essai gratuit de 14 jours. Aucune carte requise.",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "loginButton": "Se connecter",
+    "signupButton": "Créer le salon",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "haveAccount": "Vous avez déjà un compte ?",
+    "signupLink": "S'inscrire",
+    "loginLink": "Se connecter"
+  },
+  "dashboard": {
+    "nav": {
+      "overview": "Aperçu",
+      "calendar": "Calendrier",
+      "clients": "Clients",
+      "services": "Services",
+      "staff": "Personnel",
+      "pos": "Ventes / Caisse",
+      "reports": "Rapports",
+      "settings": "Paramètres"
+    },
+    "logout": "Se déconnecter"
+  },
+  "common": {
+    "loading": "Chargement…",
+    "error": "Une erreur s'est produite.",
+    "retry": "Réessayer"
+  }
+}

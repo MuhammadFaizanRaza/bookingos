@@ -1,0 +1,491 @@
+{
+  "brand": {
+    "name": "SalonOS",
+    "tagline": "Run a beautiful salon. Effortlessly."
+  },
+  "nav": {
+    "features": "Features",
+    "pricing": "Pricing",
+    "howItWorks": "How it works",
+    "testimonials": "Reviews",
+    "faq": "FAQ",
+    "login": "Log in",
+    "signup": "Start free",
+    "bookNow": "Book now",
+    "dashboard": "Dashboard"
+  },
+  "hero": {
+    "badge": "New · AI-assisted scheduling",
+    "title": "The all-in-one platform your salon deserves",
+    "subtitle": "Bookings, payments, clients and reports — beautifully unified. Fill your chairs, delight your clients, and grow revenue without the busywork.",
+    "ctaPrimary": "Start 14-day free trial",
+    "ctaSecondary": "See a live demo",
+    "noCard": "No credit card required",
+    "stat1": "salons onboarded",
+    "stat2": "bookings processed",
+    "stat3": "average rating",
+    "stat4": "uptime SLA"
+  },
+  "social": {
+    "title": "Trusted by salons & spas in 30+ countries"
+  },
+  "features": {
+    "title": "Everything you need to run the front desk",
+    "subtitle": "One elegant system instead of five clunky tools.",
+    "onlineBooking": {
+      "title": "Online Booking",
+      "desc": "A gorgeous 24/7 booking page that converts visitors into appointments."
+    },
+    "calendar": {
+      "title": "Smart Calendar",
+      "desc": "Drag-and-drop scheduling across staff, rooms and locations."
+    },
+    "pos": {
+      "title": "POS & Payments",
+      "desc": "Take card, cash and wallet payments with deposits and tips."
+    },
+    "reports": {
+      "title": "Sales & Analytics",
+      "desc": "Live dashboards for revenue, occupancy and team performance."
+    },
+    "crm": {
+      "title": "Client CRM",
+      "desc": "Histories, notes, loyalty points and birthday reminders."
+    },
+    "staff": {
+      "title": "Staff Management",
+      "desc": "Rotas, commissions and working hours that just work."
+    },
+    "inventory": {
+      "title": "Inventory",
+      "desc": "Track retail stock and get low-stock alerts automatically."
+    },
+    "reminders": {
+      "title": "Reminders",
+      "desc": "Automated SMS, WhatsApp and email cut no-shows by up to 70%."
+    },
+    "multiLocation": {
+      "title": "Multi-location",
+      "desc": "Manage every branch from a single, unified back office."
+    },
+    "multiLanguage": {
+      "title": "Multi-language",
+      "desc": "Full English, Urdu and Arabic support — including right-to-left."
+    }
+  },
+  "how": {
+    "title": "Live in minutes, not weeks",
+    "subtitle": "No installs, no migrations headaches.",
+    "step1": {
+      "title": "Create your salon",
+      "desc": "Sign up and import your services and team in a couple of clicks."
+    },
+    "step2": {
+      "title": "Share your booking link",
+      "desc": "Send clients a beautiful page that takes bookings around the clock."
+    },
+    "step3": {
+      "title": "Get paid & grow",
+      "desc": "Collect payments, track performance and rebook clients on autopilot."
+    }
+  },
+  "pricing": {
+    "title": "Simple pricing that scales with you",
+    "subtitle": "Start free for 14 days. Cancel anytime.",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "save": "Save 20%",
+    "perMonth": "/mo",
+    "mostPopular": "Most popular",
+    "cta": "Start free trial",
+    "ctaBusiness": "Talk to sales",
+    "starter": {
+      "name": "Starter",
+      "desc": "For solo pros and new salons.",
+      "f1": "1 location",
+      "f2": "Up to 3 staff",
+      "f3": "Online booking page",
+      "f4": "Calendar & reminders",
+      "f5": "Card & cash payments"
+    },
+    "pro": {
+      "name": "Pro",
+      "desc": "For growing teams that want more.",
+      "f1": "1 location",
+      "f2": "Up to 15 staff",
+      "f3": "Everything in Starter",
+      "f4": "POS, deposits & tips",
+      "f5": "Advanced analytics",
+      "f6": "Client CRM & loyalty"
+    },
+    "business": {
+      "name": "Business",
+      "desc": "For multi-location groups.",
+      "f1": "Unlimited locations",
+      "f2": "Unlimited staff",
+      "f3": "Everything in Pro",
+      "f4": "Inventory & purchasing",
+      "f5": "Priority support",
+      "f6": "Custom domain & branding"
+    }
+  },
+  "testimonials": {
+    "title": "Loved by salon owners",
+    "subtitle": "Real results from real teams.",
+    "t1": {
+      "quote": "We cut no-shows by 60% in the first month. The booking page alone paid for itself.",
+      "name": "Sofia Marchetti",
+      "role": "Owner, Lumière Beauty Lounge"
+    },
+    "t2": {
+      "quote": "Finally one tool instead of five. My team actually enjoys using it.",
+      "name": "Ayesha Khan",
+      "role": "Manager, Glow Studio"
+    },
+    "t3": {
+      "quote": "Revenue is up 32% since switching. The reports tell me exactly where to focus.",
+      "name": "Omar Haddad",
+      "role": "Founder, Barber & Co."
+    }
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "q1": "How long is the free trial?",
+    "a1": "14 days, with full access to every feature. No credit card required to start.",
+    "q2": "Can my clients book in their own language?",
+    "a2": "Yes. The booking page supports English, Urdu and Arabic, with full right-to-left layouts.",
+    "q3": "Do you take a cut of my payments?",
+    "a3": "No platform fees on payments. You only pay your plan and standard card processing.",
+    "q4": "Can I manage multiple locations?",
+    "a4": "Absolutely. The Business plan supports unlimited locations from one back office.",
+    "q5": "Is my data safe?",
+    "a5": "Your data is encrypted in transit and at rest, with daily backups and a 99.9% uptime SLA."
+  },
+  "cta": {
+    "title": "Ready to fill your chairs?",
+    "subtitle": "Join thousands of salons growing with SalonOS. Start your free trial today.",
+    "button": "Get started free"
+  },
+  "footer": {
+    "product": "Product",
+    "company": "Company",
+    "resources": "Resources",
+    "legal": "Legal",
+    "about": "About",
+    "careers": "Careers",
+    "blog": "Blog",
+    "help": "Help center",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "rights": "All rights reserved.",
+    "tagline": "The all-in-one platform for modern salons & spas."
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Log in to your salon dashboard.",
+    "signupTitle": "Create your salon",
+    "signupSubtitle": "Start your 14-day free trial. No card needed.",
+    "salonName": "Salon name",
+    "slug": "Booking address",
+    "slugHint": ".salonos.app",
+    "ownerName": "Your name",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Log in",
+    "signupButton": "Create salon",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signupLink": "Sign up",
+    "loginLink": "Log in",
+    "marketingTitle": "Everything your front desk needs",
+    "marketingDesc": "Bookings, payments, clients and reports — beautifully unified.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorCredentials": "Incorrect email or password."
+  },
+  "booking": {
+    "title": "Book an appointment",
+    "step": "Step",
+    "of": "of",
+    "next": "Continue",
+    "back": "Back",
+    "confirm": "Confirm booking",
+    "steps": {
+      "service": "Service",
+      "staff": "Staff",
+      "time": "Date & time",
+      "details": "Your details",
+      "review": "Review",
+      "payment": "Payment"
+    },
+    "pickService": "Choose your services",
+    "pickServiceDesc": "Select one or more treatments.",
+    "pickStaff": "Choose your stylist",
+    "pickStaffDesc": "Pick a favourite or let us match you.",
+    "anyStaff": "Any available professional",
+    "anyStaffDesc": "Maximum availability",
+    "pickTime": "Pick a date & time",
+    "pickTimeDesc": "Select a slot that suits you.",
+    "noSlots": "No slots available on this day. Try another date.",
+    "yourDetails": "Your details",
+    "yourDetailsDesc": "We'll use these to confirm your appointment.",
+    "name": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "notes": "Notes (optional)",
+    "notesPlaceholder": "Anything we should know?",
+    "reviewTitle": "Review your booking",
+    "reviewDesc": "Please confirm the details below.",
+    "deposit": "Deposit due now",
+    "payNow": "Pay deposit & confirm",
+    "total": "Total",
+    "duration": "Duration",
+    "with": "with",
+    "min": "min",
+    "successTitle": "You're booked!",
+    "successDesc": "A confirmation has been sent to your email. We can't wait to see you.",
+    "bookAnother": "Book another",
+    "paymentTitle": "Secure your spot",
+    "paymentDesc": "A small deposit confirms your appointment.",
+    "cardDetails": "Card details"
+  },
+  "dashboard": {
+    "search": "Search…",
+    "notifications": {
+      "title": "Notifications",
+      "markAllRead": "Mark all read",
+      "empty": "You're all caught up.",
+      "viewAll": "View all"
+    },
+    "nav": {
+      "overview": "Overview",
+      "calendar": "Calendar",
+      "clients": "Clients",
+      "services": "Services",
+      "staff": "Staff",
+      "pos": "Sales / POS",
+      "reports": "Reports",
+      "settings": "Settings"
+    },
+    "logout": "Log out",
+    "upgrade": {
+      "title": "Choose your plan",
+      "subtitle": "Upgrade to unlock more of SalonOS.",
+      "current": "Current plan",
+      "perMonth": "/mo",
+      "upgradeTo": "Upgrade to {plan}",
+      "downgradeTo": "Switch to {plan}",
+      "simulated": "Upgraded to {plan} (demo)",
+      "staffLimit": "You've reached your plan's staff limit — upgrade to add more.",
+      "features": {
+        "booking": "Online booking",
+        "calendar": "Smart calendar",
+        "clients": "Client CRM",
+        "services": "Service menu",
+        "staff": "Staff management",
+        "pos": "POS & payments",
+        "reports": "Reports & analytics",
+        "inventory": "Inventory",
+        "marketing": "Marketing",
+        "reminders": "Automated reminders",
+        "multiLocation": "Multi-location",
+        "customBranding": "Custom branding",
+        "apiAccess": "API access"
+      }
+    },
+    "gate": {
+      "locked": "This feature is part of the {plan} plan",
+      "lockedDesc": "Upgrade your plan to unlock this feature.",
+      "upgrade": "Upgrade"
+    },
+    "overview": {
+      "title": "Overview",
+      "subtitle": "Here's what's happening today.",
+      "revenue": "Today's revenue",
+      "appointments": "Appointments",
+      "newClients": "New clients",
+      "occupancy": "Occupancy",
+      "revenueChart": "Revenue (last 14 days)",
+      "upcoming": "Upcoming appointments",
+      "activity": "Recent activity",
+      "viewAll": "View all",
+      "noUpcoming": "No upcoming appointments."
+    },
+    "calendar": {
+      "title": "Calendar",
+      "subtitle": "Your day at a glance.",
+      "today": "Today",
+      "day": "Day",
+      "week": "Week",
+      "newAppointment": "New appointment"
+    },
+    "clients": {
+      "title": "Clients",
+      "subtitle": "Your client book.",
+      "newClient": "New client",
+      "name": "Name",
+      "contact": "Contact",
+      "visits": "Visits",
+      "spent": "Total spent",
+      "lastVisit": "Last visit",
+      "loyalty": "Loyalty",
+      "email": "Email",
+      "phone": "Phone",
+      "cancel": "Cancel",
+      "save": "Save",
+      "created": "Client added",
+      "delete": "Delete",
+      "deleted": "Client deleted",
+      "deleteConfirm": "Delete this client? This cannot be undone."
+    },
+    "services": {
+      "title": "Services",
+      "subtitle": "Manage your menu.",
+      "newService": "New service",
+      "editService": "Edit service",
+      "name": "Name",
+      "category": "Category",
+      "duration": "Duration",
+      "price": "Price",
+      "online": "Online",
+      "description": "Description",
+      "save": "Save service",
+      "cancel": "Cancel",
+      "color": "Colour",
+      "created": "Service created",
+      "updated": "Service updated",
+      "delete": "Delete",
+      "deleted": "Service deleted",
+      "deleteConfirm": "Delete this service? This cannot be undone.",
+      "newCategory": "+ New category",
+      "categoryName": "Category name",
+      "add": "Add",
+      "noCategory": "Uncategorized"
+    },
+    "staff": {
+      "title": "Staff",
+      "subtitle": "Your team.",
+      "newStaff": "Add staff",
+      "editStaff": "Edit staff",
+      "title2": "Title",
+      "bookable": "Bookable",
+      "commission": "Commission",
+      "name": "Name",
+      "email": "Email",
+      "bio": "Bio",
+      "color": "Color",
+      "commissionRate": "Commission rate (%)",
+      "isBookable": "Available for online booking",
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "created": "Staff member added",
+      "updated": "Staff member updated",
+      "deleted": "Staff member removed",
+      "workingHours": "Working hours",
+      "closed": "Closed",
+      "days": {
+        "mon": "Monday",
+        "tue": "Tuesday",
+        "wed": "Wednesday",
+        "thu": "Thursday",
+        "fri": "Friday",
+        "sat": "Saturday",
+        "sun": "Sunday"
+      }
+    },
+    "pos": {
+      "title": "Point of sale",
+      "subtitle": "Ring up a sale.",
+      "catalog": "Catalog",
+      "cart": "Cart",
+      "empty": "Cart is empty. Add an item to begin.",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "tax": "Tax",
+      "total": "Total",
+      "applyDiscount": "Apply discount",
+      "checkout": "Take payment",
+      "method": "Payment method",
+      "card": "Card",
+      "cash": "Cash",
+      "wallet": "Wallet",
+      "paid": "Payment received",
+      "newSale": "New sale",
+      "customer": "Customer",
+      "walkIn": "Walk-in",
+      "searchCustomer": "Search customers…",
+      "newCustomer": "New customer",
+      "customerName": "Name",
+      "customerPhone": "Phone",
+      "add": "Add",
+      "clear": "Clear",
+      "customerAdded": "Customer added",
+      "printReceipt": "Print receipt",
+      "receipt": {
+        "title": "Receipt",
+        "date": "Date",
+        "qty": "Qty",
+        "item": "Item",
+        "price": "Price",
+        "thankYou": "Thank you for your visit!"
+      },
+      "recentSales": "Recent sales",
+      "noSales": "No sales yet",
+      "reprint": "Reprint",
+      "saleComplete": "Sale complete"
+    },
+    "reports": {
+      "title": "Reports",
+      "subtitle": "Understand your business.",
+      "revenueOverTime": "Revenue over time",
+      "byService": "Revenue by service",
+      "byStaff": "Revenue by staff",
+      "statusBreakdown": "Appointment status",
+      "topClients": "Top clients",
+      "export": "Export"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Configure your salon.",
+      "branding": "Branding",
+      "salonName": "Salon name",
+      "tagline": "Tagline",
+      "logoUrl": "Logo URL",
+      "primaryColor": "Primary color",
+      "currency": "Currency",
+      "timezone": "Timezone",
+      "locale": "Default language",
+      "save": "Save changes",
+      "saved": "Settings saved",
+      "billing": "Billing & subscription",
+      "plan": "Current plan",
+      "status": "Status",
+      "renews": "Renews",
+      "manageBilling": "Manage billing",
+      "upgradePlan": "Upgrade plan",
+      "usage": "Usage",
+      "staffUsage": "Staff",
+      "locationsUsage": "Locations",
+      "unlimited": "Unlimited",
+      "bookingPage": "Booking page",
+      "coverImageUrl": "Cover image URL",
+      "about": "About your salon",
+      "phone": "Phone",
+      "address": "Address",
+      "instagramUrl": "Instagram URL",
+      "facebookUrl": "Facebook URL",
+      "whatsapp": "WhatsApp number",
+      "bookingEnabled": "Online booking enabled"
+    }
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong.",
+    "retry": "Retry",
+    "demo": "Demo data",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  }
+}
