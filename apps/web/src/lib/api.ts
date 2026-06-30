@@ -16,6 +16,7 @@ import type {
   Slot,
   StaffMember,
   Tenant,
+  Vertical,
 } from './types';
 
 export const API_BASE =
@@ -137,6 +138,7 @@ export const api = {
       ownerName: string;
       email: string;
       password: string;
+      vertical?: Vertical;
     }) =>
       apiFetch<AuthResponse>('/auth/register', {
         method: 'POST',

@@ -1,0 +1,5 @@
+-- CreateEnum
+CREATE TYPE "Vertical" AS ENUM ('SALON', 'CLINIC', 'FITNESS', 'HOTEL', 'RENTAL', 'RESTAURANT', 'EVENTS', 'SERVICES', 'GENERAL');
+
+-- AlterTable
+ALTER TABLE "Tenant" ADD COLUMN "vertical" "Vertical" NOT NULL DEFAULT 'SALON';

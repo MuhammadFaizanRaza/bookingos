@@ -12,6 +12,7 @@ import {
   SubscriptionStatus,
   TenantStatus,
   UserStatus,
+  Vertical,
   type User,
 } from '@bookingos/database';
 import * as bcrypt from 'bcryptjs';
@@ -60,6 +61,7 @@ export class AuthService {
           data: {
             name: dto.salonName,
             slug: dto.slug,
+            vertical: dto.vertical ?? Vertical.SALON,
             status: TenantStatus.TRIAL,
             plan: Plan.STARTER,
             trialEndsAt,

@@ -12,9 +12,23 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/sonner';
+import { VERTICAL_LIST } from '@/lib/verticals';
+
+const VERTICAL_VALUES = [
+  'SALON',
+  'CLINIC',
+  'FITNESS',
+  'HOTEL',
+  'RENTAL',
+  'RESTAURANT',
+  'EVENTS',
+  'SERVICES',
+  'GENERAL',
+] as const;
 
 const schema = z.object({
   salonName: z.string().min(2),
+  vertical: z.enum(VERTICAL_VALUES).default('SALON'),
   slug: z
     .string()
     .regex(/^[a-z0-9](?:[a-z0-9-]{1,38}[a-z0-9])?$/, 'invalid slug'),
@@ -76,6 +90,22 @@ export function SignupForm() {
                 }),
             })}
           />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="vertical">{t('industry')}</Label>
+          <select
+            id="vertical"
+            defaultValue="SALON"
+            className="flex h-11 w-full rounded-xl border border-input bg-background px-3 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            {...register('vertical')}
+          >
+            {VERTICAL_LIST.map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.label} — {v.description}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="space-y-2">

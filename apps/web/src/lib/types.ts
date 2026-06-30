@@ -2,6 +2,17 @@
 
 export type Plan = 'STARTER' | 'PRO' | 'BUSINESS';
 
+export type Vertical =
+  | 'SALON'
+  | 'CLINIC'
+  | 'FITNESS'
+  | 'HOTEL'
+  | 'RENTAL'
+  | 'RESTAURANT'
+  | 'EVENTS'
+  | 'SERVICES'
+  | 'GENERAL';
+
 export type AppointmentStatus =
   | 'PENDING'
   | 'CONFIRMED'
@@ -34,6 +45,7 @@ export interface Tenant {
   name: string;
   slug: string;
   plan: Plan;
+  vertical?: Vertical;
   status: string;
   locale: string;
   currency: string;

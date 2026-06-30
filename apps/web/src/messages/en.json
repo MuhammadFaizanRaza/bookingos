@@ -1,7 +1,7 @@
 {
   "brand": {
     "name": "BookingOS",
-    "tagline": "Run a beautiful salon. Effortlessly."
+    "tagline": "Run your bookings. Beautifully."
   },
   "nav": {
     "features": "Features",
@@ -179,21 +179,22 @@
     "privacy": "Privacy",
     "terms": "Terms",
     "rights": "All rights reserved.",
-    "tagline": "The all-in-one platform for modern salons & spas."
+    "tagline": "The all-in-one platform for modern booking businesses."
   },
   "auth": {
     "loginTitle": "Welcome back",
-    "loginSubtitle": "Log in to your salon dashboard.",
-    "signupTitle": "Create your salon",
+    "loginSubtitle": "Log in to your dashboard.",
+    "signupTitle": "Create your account",
     "signupSubtitle": "Start your 14-day free trial. No card needed.",
-    "salonName": "Salon name",
+    "salonName": "Business name",
+    "industry": "Industry",
     "slug": "Booking address",
     "slugHint": ".bookingos.app",
     "ownerName": "Your name",
     "email": "Email",
     "password": "Password",
     "loginButton": "Log in",
-    "signupButton": "Create salon",
+    "signupButton": "Create account",
     "noAccount": "Don't have an account?",
     "haveAccount": "Already have an account?",
     "signupLink": "Sign up",

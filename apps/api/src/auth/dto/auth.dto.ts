@@ -1,6 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -8,13 +9,23 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { Vertical } from '@bookingos/database';
 
 export class RegisterDto {
-  @ApiProperty({ example: 'Lumière Beauty Lounge', description: 'Salon name' })
+  @ApiProperty({ example: 'Lumière Beauty Lounge', description: 'Business name' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(120)
   salonName!: string;
+
+  @ApiPropertyOptional({
+    enum: Vertical,
+    example: Vertical.SALON,
+    description: 'Industry vertical (drives terminology + defaults)',
+  })
+  @IsOptional()
+  @IsEnum(Vertical)
+  vertical?: Vertical;
 
   @ApiProperty({
     example: 'lumiere',

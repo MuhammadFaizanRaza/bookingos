@@ -9,7 +9,7 @@ import {
   Length,
   MaxLength,
 } from 'class-validator';
-import { Plan } from '@bookingos/database';
+import { Plan, Vertical } from '@bookingos/database';
 
 export class UpdateTenantDto {
   @ApiPropertyOptional({ example: 'Lumière Beauty Lounge' })
@@ -102,4 +102,9 @@ export class UpdateTenantDto {
   @IsOptional()
   @IsEnum(Plan)
   plan?: Plan;
+
+  @ApiPropertyOptional({ enum: Vertical, description: 'Industry vertical' })
+  @IsOptional()
+  @IsEnum(Vertical)
+  vertical?: Vertical;
 }

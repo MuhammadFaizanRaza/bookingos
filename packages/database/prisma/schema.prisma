@@ -33,6 +33,21 @@ enum Plan {
   BUSINESS
 }
 
+// Industry vertical — drives UI terminology (term-packs), default icons,
+// and the default booking mode for new offerings. Purely presentational +
+// defaults; the underlying engine is the same across verticals.
+enum Vertical {
+  SALON       // hair, beauty, spa, nails, barber
+  CLINIC      // medical, dental, therapy, wellness
+  FITNESS     // gym, PT, yoga/pilates studios, classes
+  HOTEL       // rooms / accommodation (date-range)
+  RENTAL      // equipment / vehicle / space rental (date-range)
+  RESTAURANT  // table reservations (capacity / party size)
+  EVENTS      // ticketed events / workshops (capacity)
+  SERVICES    // home/field services: plumber, electrician, cleaning
+  GENERAL     // neutral / mixed use
+}
+
 enum SubscriptionStatus {
   TRIALING
   ACTIVE
@@ -144,6 +159,7 @@ model Tenant {
   customDomain String?      @unique
   status       TenantStatus @default(TRIAL)
   plan         Plan         @default(STARTER)
+  vertical     Vertical     @default(SALON) // industry term-pack + defaults
 
   // Localization (defaults; per-location can override timezone)
   locale       String       @default("en")    // en | ur | ar | ...
