@@ -14,7 +14,9 @@ import { BookingsService } from './bookings.service';
 import {
   AvailabilityQueryDto,
   CancelBookingDto,
+  CapacityAvailabilityDto,
   CreateBookingDto,
+  DateRangeAvailabilityDto,
   ListBookingsQueryDto,
   RescheduleBookingDto,
   UpdateStatusDto,
@@ -47,8 +49,35 @@ export class BookingsController {
     return this.bookings.getAvailability(tenantId, query);
   }
 
+  @Get('availability/date-range')
+  @ApiOperation({ summary: 'Units left for a DATE_RANGE offering (hotel/rental)' })
+  dateRangeAvailability(
+    @CurrentTenant() tenantId: string,
+    @Query() query: DateRangeAvailabilityDto,
+  ) {
+    return this.bookings.checkDateRange(tenantId, {
+      serviceId: query.serviceId,
+      checkIn: query.checkIn,
+      checkOut: query.checkOut,
+      quantity: query.quantity,
+    });
+  }
+
+  @Get('availability/capacity')
+  @ApiOperation({ summary: 'Seats left for a CAPACITY offering session (class/event)' })
+  capacityAvailability(
+    @CurrentTenant() tenantId: string,
+    @Query() query: CapacityAvailabilityDto,
+  ) {
+    return this.bookings.checkCapacity(tenantId, {
+      serviceId: query.serviceId,
+      start: query.start,
+      quantity: query.quantity,
+    });
+  }
+
   @Post()
-  @ApiOperation({ summary: 'Create an appointment with items' })
+  @ApiOperation({ summary: 'Create a booking with items (any booking mode)' })
   create(@CurrentTenant() tenantId: string, @Body() dto: CreateBookingDto) {
     return this.bookings.create(tenantId, dto);
   }

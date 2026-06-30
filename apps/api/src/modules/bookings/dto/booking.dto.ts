@@ -5,9 +5,11 @@ import {
   IsArray,
   IsDate,
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
+  Min,
   ValidateNested,
 } from 'class-validator';
 import { AppointmentStatus, BookingSource } from '@bookingos/database';
@@ -38,11 +40,30 @@ export class AppointmentItemDto {
 
   @ApiProperty({
     example: '2026-06-20T13:00:00.000Z',
-    description: 'Item start time (ISO 8601, with or without timezone).',
+    description:
+      'Item start time (ISO 8601). TIME_SLOT/CAPACITY: session start; DATE_RANGE: check-in.',
   })
   @Transform(toUtcDate)
   @IsDate()
   startsAt!: Date;
+
+  @ApiPropertyOptional({
+    example: '2026-06-23T11:00:00.000Z',
+    description: 'DATE_RANGE only: check-out time (ISO 8601). Ignored otherwise.',
+  })
+  @IsOptional()
+  @Transform(toUtcDate)
+  @IsDate()
+  endsAt?: Date;
+
+  @ApiPropertyOptional({
+    default: 1,
+    description: 'Units/seats/tickets to book (DATE_RANGE inventory, CAPACITY seats).',
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  quantity?: number;
 }
 
 export class CreateBookingDto {
@@ -116,6 +137,52 @@ export class AvailabilityQueryDto {
   @IsOptional()
   @Type(() => Number)
   stepMin?: number;
+}
+
+export class DateRangeAvailabilityDto {
+  @ApiProperty({ description: 'Offering id (DATE_RANGE booking mode)' })
+  @IsString()
+  @IsNotEmpty()
+  serviceId!: string;
+
+  @ApiProperty({ example: '2026-07-01', description: 'Check-in (ISO 8601)' })
+  @Transform(toUtcDate)
+  @IsDate()
+  checkIn!: Date;
+
+  @ApiProperty({ example: '2026-07-04', description: 'Check-out (ISO 8601)' })
+  @Transform(toUtcDate)
+  @IsDate()
+  checkOut!: Date;
+
+  @ApiPropertyOptional({ default: 1, description: 'Units requested' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  quantity?: number;
+}
+
+export class CapacityAvailabilityDto {
+  @ApiProperty({ description: 'Offering id (CAPACITY booking mode)' })
+  @IsString()
+  @IsNotEmpty()
+  serviceId!: string;
+
+  @ApiProperty({
+    example: '2026-07-01T18:00:00.000Z',
+    description: 'Session start (ISO 8601)',
+  })
+  @Transform(toUtcDate)
+  @IsDate()
+  start!: Date;
+
+  @ApiPropertyOptional({ default: 1, description: 'Seats/tickets requested' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  quantity?: number;
 }
 
 export class ListBookingsQueryDto {

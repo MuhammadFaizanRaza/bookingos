@@ -279,6 +279,77 @@ export class AvailabilityService {
     return off === 0;
   }
 
+  // ── DATE_RANGE engine (hotel rooms, rentals) ────────────────────────────────
+  /**
+   * Inventory availability for a DATE_RANGE offering across [checkIn, checkOut).
+   * Each overlapping booking consumes `quantity` units from the offering's
+   * `inventory`. Returns how many units remain and whether the requested
+   * quantity fits.
+   */
+  async checkDateRange(
+    tenantId: string,
+    params: { serviceId: string; checkIn: Date; checkOut: Date; quantity?: number },
+  ): Promise<{ available: boolean; unitsLeft: number; inventory: number }> {
+    const db = this.tenants.getClient(tenantId);
+    const service = await db.service.findFirst({
+      where: { id: params.serviceId },
+      select: { inventory: true, bookingMode: true },
+    });
+    if (!service) throw new BadRequestException('Offering not found');
+    if (service.bookingMode !== 'DATE_RANGE')
+      throw new BadRequestException('Offering is not date-range bookable');
+    if (params.checkOut.getTime() <= params.checkIn.getTime())
+      throw new BadRequestException('checkOut must be after checkIn');
+
+    const inventory = service.inventory ?? 1;
+    const overlapping = await db.appointmentItem.findMany({
+      where: {
+        serviceId: params.serviceId,
+        startsAt: { lt: params.checkOut },
+        endsAt: { gt: params.checkIn },
+        appointment: { status: { notIn: ['CANCELLED', 'NO_SHOW'] } },
+      },
+      select: { quantity: true },
+    });
+    const used = overlapping.reduce((sum, i) => sum + (i.quantity ?? 1), 0);
+    const unitsLeft = inventory - used;
+    const qty = params.quantity ?? 1;
+    return { available: unitsLeft >= qty, unitsLeft, inventory };
+  }
+
+  // ── CAPACITY engine (classes, events, restaurant covers) ────────────────────
+  /**
+   * Seats remaining for a CAPACITY offering's session starting at `start`.
+   * Each booking consumes `quantity` seats from the offering's `capacity`.
+   */
+  async checkCapacity(
+    tenantId: string,
+    params: { serviceId: string; start: Date; quantity?: number },
+  ): Promise<{ available: boolean; seatsLeft: number; capacity: number }> {
+    const db = this.tenants.getClient(tenantId);
+    const service = await db.service.findFirst({
+      where: { id: params.serviceId },
+      select: { capacity: true, bookingMode: true },
+    });
+    if (!service) throw new BadRequestException('Offering not found');
+    if (service.bookingMode !== 'CAPACITY')
+      throw new BadRequestException('Offering is not capacity bookable');
+
+    const capacity = service.capacity ?? 0;
+    const items = await db.appointmentItem.findMany({
+      where: {
+        serviceId: params.serviceId,
+        startsAt: params.start,
+        appointment: { status: { notIn: ['CANCELLED', 'NO_SHOW'] } },
+      },
+      select: { quantity: true },
+    });
+    const taken = items.reduce((s, i) => s + (i.quantity ?? 1), 0);
+    const seatsLeft = capacity - taken;
+    const qty = params.quantity ?? 1;
+    return { available: seatsLeft >= qty, seatsLeft, capacity };
+  }
+
   // ── Interval arithmetic ─────────────────────────────────────────────────────
   private subtract(free: Interval[], busy: Interval): Interval[] {
     const out: Interval[] = [];

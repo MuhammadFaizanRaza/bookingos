@@ -77,6 +77,7 @@ export class BookingsService {
             endsAt: i.endsAt,
             price: i.price,
             durationMin: i.durationMin,
+            quantity: i.quantity,
           })),
         },
       } as Prisma.AppointmentUncheckedCreateInput,
@@ -157,6 +158,7 @@ export class BookingsService {
             endsAt: i.endsAt,
             price: i.price,
             durationMin: i.durationMin,
+            quantity: i.quantity,
           })),
         },
       },
@@ -229,6 +231,22 @@ export class BookingsService {
     return this.availability.getSlots(tenantId, params);
   }
 
+  /** DATE_RANGE offerings (hotel/rental): units left for [checkIn, checkOut). */
+  checkDateRange(
+    tenantId: string,
+    params: { serviceId: string; checkIn: Date; checkOut: Date; quantity?: number },
+  ) {
+    return this.availability.checkDateRange(tenantId, params);
+  }
+
+  /** CAPACITY offerings (class/event/restaurant): seats left for a session. */
+  checkCapacity(
+    tenantId: string,
+    params: { serviceId: string; start: Date; quantity?: number },
+  ) {
+    return this.availability.checkCapacity(tenantId, params);
+  }
+
   // ---- helpers ------------------------------------------------------------
 
   /**
@@ -272,6 +290,68 @@ export class BookingsService {
           `Invalid startsAt for service ${service.name} — expected ISO 8601 string`,
         );
       }
+      const quantity = item.quantity ?? 1;
+
+      // ── DATE_RANGE: hotel rooms / rentals — check-in → check-out vs inventory
+      if (service.bookingMode === 'DATE_RANGE') {
+        const checkOut = item.endsAt;
+        if (!checkOut || isNaN(checkOut.getTime())) {
+          throw new BadRequestException(
+            `${service.name}: endsAt (check-out) is required for date-range bookings`,
+          );
+        }
+        const check = await this.availability.checkDateRange(tenantId, {
+          serviceId: service.id,
+          checkIn: itemStartsAt,
+          checkOut,
+          quantity,
+        });
+        if (!check.available) {
+          throw new ConflictException(
+            `${service.name}: only ${check.unitsLeft} of ${check.inventory} unit(s) available for the selected dates`,
+          );
+        }
+        const nights = Math.max(
+          1,
+          Math.ceil((checkOut.getTime() - itemStartsAt.getTime()) / 86_400_000),
+        );
+        built.push({
+          serviceId: service.id,
+          staffId: undefined as string | undefined,
+          startsAt: itemStartsAt,
+          endsAt: checkOut,
+          price: new Prisma.Decimal(service.price).mul(nights).mul(quantity),
+          durationMin: nights * 1440,
+          quantity,
+        });
+        continue;
+      }
+
+      // ── CAPACITY: classes / events / restaurant covers — seats per session
+      if (service.bookingMode === 'CAPACITY') {
+        const check = await this.availability.checkCapacity(tenantId, {
+          serviceId: service.id,
+          start: itemStartsAt,
+          quantity,
+        });
+        if (!check.available) {
+          throw new ConflictException(
+            `${service.name}: only ${check.seatsLeft} of ${check.capacity} seat(s) left for this session`,
+          );
+        }
+        built.push({
+          serviceId: service.id,
+          staffId: undefined as string | undefined,
+          startsAt: itemStartsAt,
+          endsAt: new Date(itemStartsAt.getTime() + service.durationMin * 60000),
+          price: new Prisma.Decimal(service.price).mul(quantity),
+          durationMin: service.durationMin,
+          quantity,
+        });
+        continue;
+      }
+
+      // ── TIME_SLOT (default): provider + duration ─────────────────────────────
       let staffId = item.staffId;
       // If the supplied staffId doesn't belong to this service (e.g. came from
       // stale/mock data), silently fall back to auto-assign rather than erroring.
@@ -326,6 +406,7 @@ export class BookingsService {
         endsAt,
         price: service.price,
         durationMin: service.durationMin,
+        quantity,
       });
     }
     return built;
