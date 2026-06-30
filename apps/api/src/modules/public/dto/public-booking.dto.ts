@@ -1,6 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
   ArrayMinSize,
   IsArray,
   IsDate,
@@ -9,6 +10,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Max,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -55,6 +57,7 @@ export class PublicBookingItemDto {
   @IsOptional()
   @IsInt()
   @Min(1)
+  @Max(50)
   quantity?: number;
 }
 
@@ -82,6 +85,7 @@ export class PublicBookingDto {
   @ApiProperty({ type: [PublicBookingItemDto] })
   @IsArray()
   @ArrayMinSize(1)
+  @ArrayMaxSize(20)
   @ValidateNested({ each: true })
   @Type(() => PublicBookingItemDto)
   items!: PublicBookingItemDto[];

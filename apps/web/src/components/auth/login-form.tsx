@@ -61,6 +61,18 @@ export function LoginForm() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-4">
         <div className="space-y-2">
+          <Label htmlFor="slug">{t('slug')}</Label>
+          <Input
+            id="slug"
+            placeholder="lumiere"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            {...register('slug')}
+          />
+          <p className="text-xs text-muted-foreground">{t('slugHint')}</p>
+        </div>
+        <div className="space-y-2">
           <Label htmlFor="email">{t('email')}</Label>
           <Input
             id="email"

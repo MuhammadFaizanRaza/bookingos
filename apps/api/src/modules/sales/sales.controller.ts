@@ -59,6 +59,7 @@ export class SalesController {
   }
 
   @Delete(':id/items/:itemId')
+  @Roles(Role.OWNER, Role.MANAGER, Role.RECEPTIONIST)
   @ApiOperation({ summary: 'Remove a sale line' })
   removeItem(
     @CurrentTenant() tenantId: string,
@@ -69,6 +70,7 @@ export class SalesController {
   }
 
   @Post(':id/discount')
+  @Roles(Role.OWNER, Role.MANAGER, Role.RECEPTIONIST)
   @ApiOperation({ summary: 'Apply a discount code' })
   applyDiscount(
     @CurrentTenant() tenantId: string,
@@ -79,6 +81,7 @@ export class SalesController {
   }
 
   @Patch(':id/tip-tax')
+  @Roles(Role.OWNER, Role.MANAGER, Role.RECEPTIONIST)
   @ApiOperation({ summary: 'Set tip and/or tax rate and recompute totals' })
   setTipTax(
     @CurrentTenant() tenantId: string,

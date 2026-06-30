@@ -76,7 +76,9 @@ This is **defence-in-depth**: the RBAC guards (`JwtAuthGuard` + `RolesGuard`) ar
 
 The resolved `Tenant` + `tenantId` are attached to the request. An unknown slug → `404`. No slug at all → the request still proceeds (auth and webhook routes don't need a tenant); any route that *does* need one calls `@CurrentTenant()`, which throws `400` when absent.
 
-On the web side, `apps/web/src/middleware.ts` maps the request subdomain to the `x-tenant-slug` header, and `lib/api.ts` attaches it to every API call.
+> **Authenticated requests do NOT trust the client header.** The header/subdomain resolution above is only authoritative for **public** routes (guest booking on a tenant site). For any authenticated request, the global **`TenantContextGuard`** (`apps/api/src/tenant/tenant-context.guard.ts`, runs right after `JwtAuthGuard`) re-binds `req.tenant`/`req.tenantId` to the tenant encoded in the user's **JWT**, overriding whatever `x-tenant-slug` the client sent. This is essential: without it, any logged-in user could read or write another tenant's data simply by changing the header. `SUPER_ADMIN` (a platform user with `tenantId === null`) is exempt and may target a tenant via the header.
+
+On the web side, `apps/web/src/middleware.ts` maps the request subdomain to the `x-tenant-slug` header, and `lib/api.ts` attaches it to every API call — but for authenticated calls the server's `TenantContextGuard` is the source of truth, not that header.
 
 ---
 

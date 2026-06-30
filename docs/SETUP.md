@@ -81,7 +81,7 @@ pnpm install
 pnpm docker:up                                  # docker compose up -d
 pnpm --filter @bookingos/database build           # prisma generate + tsc
 pnpm db:migrate                                  # prisma migrate dev
-pnpm db:seed                                     # demo salon
+pnpm db:seed                                     # nine demo tenants (one per vertical)
 ```
 
 > If Docker complains about permissions, add your user to the `docker` group (`sudo usermod -aG docker $USER`, then re-login) or run the compose commands with `sudo`.
@@ -103,7 +103,7 @@ pnpm db:seed                                     # demo salon
    pnpm install
    pnpm db:build      # prisma generate + compile @bookingos/database
    pnpm db:migrate    # apply migrations
-   pnpm db:seed       # demo salon
+   pnpm db:seed       # nine demo tenants (one per vertical)
    pnpm dev
    ```
 
@@ -114,7 +114,7 @@ pnpm db:seed                                     # demo salon
 | API health | `curl http://localhost:4000/api/v1/health` |
 | Swagger UI (live API reference) | http://localhost:4000/docs |
 | Web app | http://localhost:3000 |
-| Booking site (demo) | http://localhost:3000/en/book |
+| Booking site (per tenant) | http://localhost:3000/en/`<slug>` (e.g. `/en/lumiere`, `/en/azure`) → `/reserve` to book |
 | Prisma Studio | `pnpm db:studio` |
 
 > The API connects to PostgreSQL on startup (`$connect()` in `onModuleInit`), so the database must be reachable before `pnpm dev`.

@@ -9,7 +9,7 @@ import {
   Length,
   MaxLength,
 } from 'class-validator';
-import { Plan, Vertical } from '@bookingos/database';
+import { Vertical } from '@bookingos/database';
 
 export class UpdateTenantDto {
   @ApiPropertyOptional({ example: 'Lumière Beauty Lounge' })
@@ -98,10 +98,9 @@ export class UpdateTenantDto {
   @IsBoolean()
   bookingEnabled?: boolean;
 
-  @ApiPropertyOptional({ enum: Plan, description: 'Billing plan' })
-  @IsOptional()
-  @IsEnum(Plan)
-  plan?: Plan;
+  // NOTE: `plan` is intentionally NOT settable here. The billing plan is driven
+  // solely by Stripe (checkout + webhooks); allowing it on this DTO would let an
+  // owner self-upgrade to BUSINESS (unlimited limits) for free. See billing module.
 
   @ApiPropertyOptional({ enum: Vertical, description: 'Industry vertical' })
   @IsOptional()

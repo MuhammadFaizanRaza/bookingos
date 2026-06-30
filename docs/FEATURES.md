@@ -31,16 +31,16 @@ Every offering (`Service`) declares a `bookingMode`; availability and booking cr
 
 ---
 
-## 🗓️ Online Booking — Done (TIME_SLOT) / Partial (other modes)
+## 🗓️ Online Booking — Done (all three modes)
 
 - Branded, locale-aware public booking site per tenant — no login required for guests.
 - Multi-step flow: pick offering → resource → date/time → details → (optional) deposit.
 - Guests are matched to or created as a `Client` automatically on booking.
-- **Done (API):** the public site exposes all three availability engines — `GET /public/availability` (TIME_SLOT), `/public/availability/date-range`, `/public/availability/capacity` — and `POST /public/bookings` accepts `endsAt` + `quantity`.
-- **Partial (web):** the reserve-flow UI currently renders the TIME_SLOT slot picker; the DATE_RANGE date-range picker and CAPACITY ticket/party-size selector are pending. The **admin** services manager already configures all three modes.
+- **Mode-aware reserve flow:** the web UI now renders a different picker per `bookingMode` — the TIME_SLOT slot grid, the DATE_RANGE check-in/check-out date picker (+ units stepper), and the CAPACITY date/time + guests/tickets selector — each backed by live availability. The admin services manager configures all three modes.
+- **API:** the public site exposes all three availability engines — `GET /public/availability` (TIME_SLOT), `/public/availability/date-range`, `/public/availability/capacity` — and `POST /public/bookings` accepts `endsAt` + `quantity` per item. `/public/services` returns `bookingMode/capacity/inventory`; `/public/site` returns the tenant `vertical`.
 
 **API:** `GET /public/site`, `/public/services`, `/public/staff`, `/public/availability`, `/public/availability/date-range`, `/public/availability/capacity`, `/public/locations`, `/public/reviews`, `POST /public/bookings`
-**Web:** `/book`
+**Web:** `/[locale]/[slug]` (booking-site landing) → `/[locale]/[slug]/reserve` (multi-mode flow). `/[locale]/book` is a legacy redirect to `/[locale]/lumiere`.
 
 ## 📅 Calendar & Scheduling — Done
 

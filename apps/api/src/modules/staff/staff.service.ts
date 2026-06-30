@@ -16,6 +16,17 @@ import {
   UpdateStaffDto,
 } from './dto/staff.dto';
 
+/** User fields safe to return to the client — never the passwordHash. */
+const SAFE_USER_SELECT = {
+  id: true,
+  name: true,
+  email: true,
+  phone: true,
+  avatarUrl: true,
+  role: true,
+  status: true,
+} as const;
+
 @Injectable()
 export class StaffService {
   constructor(
@@ -83,7 +94,7 @@ export class StaffService {
             ? { connect: serviceIds.map((id) => ({ id })) }
             : undefined,
         },
-        include: { user: true, services: true },
+        include: { user: { select: SAFE_USER_SELECT }, services: true },
       });
     });
   }
@@ -104,7 +115,7 @@ export class StaffService {
     const staff = await this.tenants.getClient(tenantId).staffProfile.findFirst({
       where: { id },
       include: {
-        user: true,
+        user: { select: SAFE_USER_SELECT },
         services: true,
         workingHours: { orderBy: { dayOfWeek: 'asc' } },
         timeOff: { orderBy: { startsAt: 'asc' } },
@@ -149,7 +160,7 @@ export class StaffService {
           ? { services: { set: serviceIds.map((sid) => ({ id: sid })) } }
           : {}),
       },
-      include: { user: true, services: true },
+      include: { user: { select: SAFE_USER_SELECT }, services: true },
     });
   }
 

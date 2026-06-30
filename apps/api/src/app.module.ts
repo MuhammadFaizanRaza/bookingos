@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { DatabaseModule } from './database/database.module';
 import { MessagingModule } from './messaging/messaging.module';
@@ -14,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { TenantMiddleware } from './tenant/tenant.middleware';
+import { TenantContextGuard } from './tenant/tenant-context.guard';
 import { HealthController } from './health/health.controller';
 import { TenantsModule } from './modules/tenants/tenants.module';
 import { LocationsModule } from './modules/locations/locations.module';
@@ -37,6 +39,10 @@ import { WebhooksModule } from './modules/webhooks/webhooks.module';
       // Use the monorepo root .env (apps/api → ../../.env)
       envFilePath: ['../../.env', '.env'],
     }),
+    // Rate-limiting backbone. Registered globally so ThrottlerGuard can be
+    // applied to specific abuse-prone routes (auth, public booking) — it is NOT
+    // a global guard, so normal authenticated dashboard traffic is unaffected.
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
     DatabaseModule,
     MessagingModule,
     StripeModule,
@@ -60,6 +66,7 @@ import { WebhooksModule } from './modules/webhooks/webhooks.module';
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: TenantContextGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
 })

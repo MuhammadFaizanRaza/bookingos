@@ -196,12 +196,15 @@ Routes that need a tenant return `400` if none is resolved; an unknown slug retu
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/public/site` | Booking-site branding, locale & locations |
-| GET | `/public/services` | Online-bookable services |
+| GET | `/public/site` | Booking-site branding, vertical, locale & locations |
+| GET | `/public/services` | Online-bookable services (incl. `bookingMode`, `capacity`, `inventory`) |
 | GET | `/public/staff` | Bookable staff (optional `serviceId`) |
-| GET | `/public/availability` | Free slots for a service on a date |
+| GET | `/public/availability` | Free slots for a TIME_SLOT service on a date |
+| GET | `/public/availability/date-range` | Units left for a DATE_RANGE offering over `[checkIn, checkOut)` |
+| GET | `/public/availability/capacity` | Seats left for a CAPACITY session |
+| GET | `/public/locations` | Active locations |
 | GET | `/public/reviews` | Published reviews |
-| POST | `/public/bookings` | Create a guest booking (find-or-create client) |
+| POST | `/public/bookings` | Create a guest booking (find-or-create client); each item accepts `startsAt`, optional `endsAt` (DATE_RANGE) and `quantity` (units/seats) |
 
 > All `/public/*` routes still require a resolved tenant (`x-tenant-slug` header or subdomain) — they just don't require a logged-in user.
 

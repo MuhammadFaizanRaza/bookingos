@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { Public } from '../../auth/decorators/public.decorator';
 import { CurrentTenant } from '../../tenant/current-tenant.decorator';
 import { PublicService } from './public.service';
@@ -87,6 +88,8 @@ export class PublicController {
   }
 
   @Post('bookings')
+  @UseGuards(ThrottlerGuard)
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @ApiOperation({ summary: 'Create a guest booking (find-or-create client)' })
   book(@CurrentTenant() tenantId: string, @Body() dto: PublicBookingDto) {
     return this.publicSvc.createBooking(tenantId, dto);

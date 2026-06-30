@@ -9,6 +9,39 @@ import helmet from 'helmet';
 import type { RequestWithTenant } from './common/types';
 import { AppModule } from './app.module';
 
+/**
+ * Fails fast if the JWT signing secrets are absent, too short, or still the
+ * shipped `change-me-*` placeholders. Skipped only when explicitly allowed for
+ * local throwaway runs (ALLOW_WEAK_SECRETS=true).
+ */
+function assertStrongSecrets(config: ConfigService): void {
+  if (config.get<string>('ALLOW_WEAK_SECRETS') === 'true') return;
+
+  const weak = (name: string): string | null => {
+    const value = config.get<string>(name) ?? '';
+    if (!value) return `${name} is not set`;
+    if (/change-me|placeholder|secret-here|^changeme/i.test(value)) {
+      return `${name} is still a default placeholder`;
+    }
+    if (value.length < 32) {
+      return `${name} is too short (need ≥ 32 chars; generate with \`openssl rand -hex 32\`)`;
+    }
+    return null;
+  };
+
+  const problems = ['JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET']
+    .map(weak)
+    .filter((p): p is string => p !== null);
+
+  if (problems.length > 0) {
+    throw new Error(
+      `Insecure JWT configuration — refusing to start:\n  - ${problems.join(
+        '\n  - ',
+      )}\nSet strong secrets in .env (or ALLOW_WEAK_SECRETS=true for local throwaway runs only).`,
+    );
+  }
+}
+
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     // Capture the raw body so the Stripe webhook can verify signatures.
@@ -16,6 +49,12 @@ async function bootstrap(): Promise<void> {
     bodyParser: false,
   });
   const config = app.get(ConfigService);
+
+  // --- Secret hardening ---------------------------------------------------
+  // Refuse to boot with missing, default, or weak JWT secrets. The .env.example
+  // ships `change-me-*` placeholders; deploying with those would let anyone who
+  // has seen the repo forge a valid token for any user/role.
+  assertStrongSecrets(config);
 
   // --- Body parsing -------------------------------------------------------
   // Stripe webhook needs the untouched raw buffer; everything else is JSON.

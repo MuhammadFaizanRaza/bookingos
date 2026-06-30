@@ -22,6 +22,7 @@ export class ReviewsController {
   constructor(private readonly reviews: ReviewsService) {}
 
   @Post()
+  @Roles(Role.OWNER, Role.MANAGER)
   @ApiOperation({ summary: 'Create a review' })
   create(@CurrentTenant() tenantId: string, @Body() dto: CreateReviewDto) {
     return this.reviews.create(tenantId, dto);

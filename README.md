@@ -63,7 +63,7 @@ At booking time, `BookingsService.create()` dispatches per line item on `Service
 | --- | --- |
 | 🏭 **Multi-vertical** | 9 industry term-packs; pick a vertical at signup, UI relabels automatically |
 | 🧩 **Multi-model booking** | TIME_SLOT, DATE_RANGE and CAPACITY engines on one schema |
-| 🗓️ **Online booking** | Branded, locale-aware public booking site with a smart slot-availability engine and optional Stripe deposit |
+| 🗓️ **Online booking** | Branded, locale-aware public booking site with a mode-aware reserve flow (slot / date-range / seats), live availability and optional Stripe deposit |
 | 📅 **Calendar & scheduling** | Reschedule, cancel, full status lifecycle (pending → completed / no-show), booking source tracking |
 | 👩‍🔧 **Resources & availability** | Profiles, working hours, time-off, per-offering eligibility, commission; resource types HUMAN / ROOM / TABLE / EQUIPMENT / UNIT |
 | 🛍️ **Offerings & catalogue** | Categorised offerings with duration, buffers, pricing, deposits, booking mode, capacity/inventory and online-bookable flags |

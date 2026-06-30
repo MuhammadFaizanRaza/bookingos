@@ -21,6 +21,7 @@ const TENANT_MODELS = new Set<string>([
   'Review',
   'Notification',
   'AuditLog',
+  'Subscription',
 ]);
 
 /**

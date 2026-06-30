@@ -69,11 +69,14 @@ ROOT_DOMAIN=bookingos.local
 - Every tenant-scoped model has `tenantId` as first field + composite indexes
 - Demo tenants (one per vertical, password `Passw0rd!`): `lumiere`/`bloom` (SALON), `medicare` (CLINIC), `pulse` (FITNESS/CAPACITY), `azure` (HOTEL/DATE_RANGE), `gearup` (RENTAL/DATE_RANGE), `tavola` (RESTAURANT/CAPACITY), `summit` (EVENTS/CAPACITY), `fixit` (SERVICES). Owner = `owner@<slug>.demo`; each resource is also a login.
 
-## API modules (apps/api/src/modules/)
+## API modules
+
+Feature modules live in `apps/api/src/modules/` (14 folders: tenants, locations, staff, services, clients, bookings, products, sales, payments, billing, reports, reviews, public, webhooks). `auth/`, `messaging/`, and `health/` are siblings at `apps/api/src/` (not under `modules/`).
 
 | Module    | Routes                                                                              |
 | --------- | ----------------------------------------------------------------------------------- |
 | auth      | POST /auth/register, /login, /refresh, /logout, GET /auth/me                        |
+| health    | GET /health (public liveness + DB probe)                                            |
 | tenants   | GET/PATCH /tenant                                                                   |
 | locations | CRUD /locations                                                                     |
 | staff     | CRUD /staff, working hours, time-off                                                |
@@ -86,7 +89,7 @@ ROOT_DOMAIN=bookingos.local
 | billing   | GET /billing/subscription, POST /billing/checkout, /billing/portal                  |
 | reports   | KPIs, revenue, utilization, staff, low stock, ratings                               |
 | reviews   | CRUD /reviews                                                                       |
-| public    | GET /public/site, /services, /staff, /availability; POST /public/bookings (no auth) |
+| public    | GET /public/site (incl. vertical), /services (incl. bookingMode/capacity/inventory), /staff, /availability (+ /availability/date-range, /availability/capacity), /locations, /reviews; POST /public/bookings (accepts endsAt + quantity per item) — all no-auth |
 | webhooks  | POST /webhooks/stripe (signature-verified, idempotent)                              |
 | messaging | Email/SMS/WhatsApp/push (scaffolded, not fully wired)                               |
 
@@ -124,7 +127,7 @@ Roles: `SUPER_ADMIN | OWNER | MANAGER | STAFF | RECEPTIONIST | CLIENT`
 | RefreshToken      | Session management (hashed)                                                                |
 | WebhookEvent      | Stripe idempotency guard                                                                   |
 
-Plans: `STARTER | PRO | BUSINESS` — defined in `packages/database/src/index.ts` and `apps/web/src/lib/plans.ts`
+Plans: `STARTER | PRO | BUSINESS` — `Plan` enum from Prisma (re-exported via `packages/database/src/index.ts`). Prices + feature flags + limits live in `apps/web/src/lib/plans.ts`; the server-enforced staff/location caps are `PLAN_LIMITS` in `apps/api/src/modules/billing/billing.service.ts` (STARTER 3 staff/1 location, PRO 15/3, BUSINESS unlimited).
 
 ## Web app (apps/web/src/)
 
@@ -133,8 +136,10 @@ App Router with locale prefix `/[locale]/`:
 | Route               | Purpose                                                        |
 | ------------------- | -------------------------------------------------------------- |
 | /                   | Marketing landing (hero, pricing, FAQ)                         |
-| /login, /signup     | Auth                                                           |
-| /book               | Public multi-step booking (service→staff→slot→details→deposit) |
+| /login, /signup     | Auth (login has a workspace/slug field — scopes to a tenant)    |
+| /[slug]             | Tenant's public booking-site landing                           |
+| /[slug]/reserve     | Public multi-step booking, mode-aware (slot / date-range / seats → details → deposit) |
+| /book               | Legacy redirect → /[locale]/lumiere                            |
 | /dashboard/calendar | Appointments calendar                                          |
 | /dashboard/clients  | CRM                                                            |
 | /dashboard/services | Service + category management                                  |
@@ -155,16 +160,15 @@ i18n: **en / ur / ar** (ur + ar are RTL). Translations at `src/messages/{en,ur,a
 
 ## Feature status
 
-**Done:** All 16 API modules, Stripe (PaymentIntents, Connect, Checkout, Portal, webhooks), marketing landing, auth, public booking, dashboard shell, i18n, three availability engines (TIME_SLOT/DATE_RANGE/CAPACITY), vertical term-packs + signup picker, POS, inventory, reports, CRM.
+**Done:** All API modules, Stripe (PaymentIntents, Connect, Checkout, Portal, webhooks), marketing landing, auth, dashboard shell, i18n, three availability engines (TIME_SLOT/DATE_RANGE/CAPACITY) on **both** the authenticated `/bookings/*` and public `/public/*` routes, mode-aware public reserve flow (`/[slug]/reserve` renders slot / date-range / seats pickers), vertical term-packs + signup picker, POS, inventory, reports, CRM, server-enforced plan staff/location caps.
 
 **Partial / scaffolded:**
 
-- Public booking site (`/public/*`) currently exposes TIME_SLOT availability only; DATE_RANGE/CAPACITY availability are on the authenticated `/bookings/availability/*` routes
 - Web dashboard falls back to mock data where API is not wired
 - Stripe Elements simulated until real keys configured
 - Notifications (email/SMS/push) — models exist, sending not wired
 - Redis provisioned, not used for jobs yet
-- Plan feature-gating — plans sold but per-plan caps not enforced
+- Plan feature-gating — staff & location caps **are** enforced server-side (403 at the ceiling); per-plan *feature* gating (reports/inventory/etc.) is still UI-only
 - File uploads — S3 env vars exist, pipeline not built
 
 **Roadmap (priority order):**
@@ -173,7 +177,7 @@ i18n: **en / ur / ar** (ur + ar are RTL). Translations at `src/messages/{en,ur,a
 2. Live Stripe Elements + deposits
 3. Email/SMS appointment reminders (Twilio)
 4. Real-time calendar (WebSocket/SSE)
-5. Plan enforcement + usage metering
+5. Per-plan *feature* gating + usage metering (staff/location caps already enforced)
 6. Advanced analytics (cohort, rebooking, no-show)
 7. PostgreSQL RLS hardening
 8. Multi-currency payouts

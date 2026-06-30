@@ -10,13 +10,14 @@ An honest account of what's fully implemented, what's scaffolded or partial, and
 - pnpm + Turborepo monorepo; `pnpm install`, `pnpm db:build`, and `pnpm build` (both apps) all succeed.
 - Complete Prisma 6 / PostgreSQL 16 data model (`schema.prisma`) covering tenants, users, staff, services, clients, bookings, sales, payments, inventory, discounts, reviews, notifications, audit log, webhook events.
 - Multi-tenancy: shared DB + row-level `tenantId`, the `forTenant()` Prisma extension, and tenant resolution (header → subdomain → query). See [MULTI-TENANCY.md](MULTI-TENANCY.md).
-- Fully-seeded demo salon (Lumière) for instant demos; `pnpm db:seed` resets it.
+- Nine fully-seeded demo tenants — one (or two) per vertical (SALON ×2, CLINIC, FITNESS, HOTEL, RENTAL, RESTAURANT, EVENTS, SERVICES) — for instant demos; `pnpm db:seed` resets them.
 
 **API (NestJS 11)**
 - Boots, maps all routes, serves Swagger at `/docs`, global `/api/v1` prefix, helmet + CORS.
 - Auth: JWT access (15m) + rotating, hashed refresh tokens (30d); signup creates Tenant + OWNER + TRIAL subscription atomically; global `JwtAuthGuard` + `RolesGuard`.
 - All documented modules: tenant, locations, staff (+ working-hours + time-off), services + categories, clients, bookings (incl. the availability slot algorithm), products + inventory movements, sales/POS, payments, billing, reports, reviews, public booking, Stripe webhooks.
 - Stripe: PaymentIntents (incl. Connect destination charges), cash recording, subscription Checkout/Portal, and signature-verified, idempotent webhooks (`WebhookEvent` table).
+- Security hardening: authenticated requests are bound to the user's own tenant via `TenantContextGuard` (client `x-tenant-slug` cannot pivot tenants); role-gated financial/admin writes; `passwordHash` and Stripe IDs never returned; `plan` not client-settable; weak/default JWT secrets rejected at boot; `@nestjs/throttler` on auth + public booking.
 
 **Web (Next.js 15)**
 - Premium marketing landing (hero, features, how-it-works, 3-tier pricing, testimonials, FAQ, CTA).
@@ -42,7 +43,7 @@ An honest account of what's fully implemented, what's scaffolded or partial, and
 2. **Live Stripe Elements + deposits** — connect the booking payment step and POS card flow to real PaymentIntents and confirm via webhooks.
 3. **Notification wiring** — appointment confirmations + reminders over email and **SMS/WhatsApp (Twilio)**, scheduled via Redis-backed jobs.
 4. **Real-time calendar** — WebSocket/SSE updates so the front desk sees new bookings and status changes instantly.
-5. **Plan enforcement & metering** — enforce staff/location/feature limits per plan; usage-based upsell prompts.
+5. **Plan enforcement & metering** — staff/location caps are already enforced server-side; extend to per-plan *feature* gating (reports/inventory/etc.) on the API and usage-based upsell prompts.
 6. **Advanced reporting** — cohort retention, rebooking rate, no-show analytics, commission/payroll exports.
 7. **RLS hardening** — add PostgreSQL Row-Level Security as a database-enforced backstop on top of `forTenant()` (see [MULTI-TENANCY.md](MULTI-TENANCY.md) §7), with an optional schema-per-tenant tier.
 8. **Multi-currency payouts** — per-location currency and Connect payouts across currencies.

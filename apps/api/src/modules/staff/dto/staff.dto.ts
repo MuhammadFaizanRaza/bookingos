@@ -4,8 +4,8 @@ import {
   IsArray,
   IsBoolean,
   IsEmail,
-  IsEnum,
   IsHexColor,
+  IsIn,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -79,10 +79,25 @@ export class CreateStaffDto {
   serviceIds?: string[];
 }
 
+/**
+ * Roles assignable to a staff member via the staff endpoint. Deliberately
+ * excludes OWNER and SUPER_ADMIN so a MANAGER cannot escalate an account (or
+ * itself) to owner/platform-admin. Ownership transfer is a separate, dedicated
+ * flow.
+ */
+const ASSIGNABLE_STAFF_ROLES = [
+  Role.MANAGER,
+  Role.STAFF,
+  Role.RECEPTIONIST,
+] as const;
+
 export class UpdateStaffDto extends PartialType(CreateStaffDto) {
-  @ApiPropertyOptional({ enum: Role, description: 'Change this staff member\'s role' })
+  @ApiPropertyOptional({
+    enum: ASSIGNABLE_STAFF_ROLES,
+    description: "Change this staff member's role (MANAGER, STAFF or RECEPTIONIST only)",
+  })
   @IsOptional()
-  @IsEnum(Role)
+  @IsIn(ASSIGNABLE_STAFF_ROLES as unknown as Role[])
   role?: Role;
 }
 

@@ -67,13 +67,15 @@ A typical authenticated dashboard request — e.g. `GET /api/v1/bookings` — fl
 
 3. **JwtAuthGuard** (global) validates the access token via the Passport JWT strategy, unless the route is `@Public()`. The decoded user (`sub`, `tenantId`, `role`, …) is attached to `req.user`.
 
-4. **RolesGuard** (global) enforces `@Roles(...)` metadata when present (e.g. `OWNER, MANAGER` for write operations). No metadata → allowed for any authenticated user.
+4. **TenantContextGuard** (global, right after auth) re-binds `req.tenant`/`req.tenantId` to the tenant in the user's **JWT** for authenticated requests — the client-supplied `x-tenant-slug` is *not* trusted to pick the tenant once a user is authenticated (a tenant user can only ever act within their own tenant; `SUPER_ADMIN` with `tenantId === null` is exempt). Public routes keep the header/subdomain-resolved tenant.
 
-5. **Controller** pulls the tenant id with `@CurrentTenant()` (throws `400` if none was resolved) and delegates to a **service**.
+5. **RolesGuard** (global) enforces `@Roles(...)` metadata when present (e.g. `OWNER, MANAGER` for write operations). No metadata → allowed for any authenticated user.
 
-6. **Service** does all data access through `TenantService.getClient(tenantId)` → `forTenant(tenantId)`, a Prisma `$extends` client that **auto-filters and auto-stamps `tenantId`** on every tenant-owned model. This is defence-in-depth: even a forgotten `where` clause can't leak another tenant's rows. Cross-tenant/platform data (Tenant lookup, RefreshToken, WebhookEvent, Subscription) uses the raw `PrismaService.client`.
+6. **Controller** pulls the tenant id with `@CurrentTenant()` (throws `400` if none was resolved) and delegates to a **service**.
 
-7. **Response** — errors are normalised by the global `AllExceptionsFilter`; money is handled with `Decimal` helpers in `common/money.ts`.
+7. **Service** does all data access through `TenantService.getClient(tenantId)` → `forTenant(tenantId)`, a Prisma `$extends` client that **auto-filters and auto-stamps `tenantId`** on every tenant-owned model. This is defence-in-depth: even a forgotten `where` clause can't leak another tenant's rows. Cross-tenant/platform data (Tenant lookup, RefreshToken, WebhookEvent, Subscription) uses the raw `PrismaService.client`.
+
+8. **Response** — errors are normalised by the global `AllExceptionsFilter`; money is handled with `Decimal` helpers in `common/money.ts`.
 
 Public booking-site requests (`/api/v1/public/*`) skip auth (`@Public()`) but still resolve the tenant from `x-tenant-slug`/subdomain, so a guest can browse and book.
 
@@ -107,7 +109,7 @@ A booking is not one-size-fits-all. Each offering carries a **`bookingMode`** (`
 
 Booking creation validates against the right engine, then persists `AppointmentItem.quantity` and (for CAPACITY) `Appointment.partySize`. `StaffProfile.resourceType` (`HUMAN | ROOM | TABLE | EQUIPMENT | UNIT`) and its optional `capacity` let non-human resources (rooms, tables) participate in the same model.
 
-> **Surface note:** both the authenticated dashboard (`/bookings/availability`, `/bookings/availability/date-range`, `/bookings/availability/capacity`) and the public booking site (`/public/availability`, `/public/availability/date-range`, `/public/availability/capacity`) expose all three engines; `POST /public/bookings` accepts `endsAt` + `quantity`. The web reserve-flow UI for the DATE_RANGE/CAPACITY pickers is still pending.
+> **Surface note:** both the authenticated dashboard (`/bookings/availability`, `/bookings/availability/date-range`, `/bookings/availability/capacity`) and the public booking site (`/public/availability`, `/public/availability/date-range`, `/public/availability/capacity`) expose all three engines; `POST /public/bookings` accepts `endsAt` + `quantity`. The web reserve-flow UI (`apps/web/src/components/booking/reserve-page.tsx`, route `/[locale]/[slug]/reserve`) renders a mode-specific picker for each: TIME_SLOT slot grid, DATE_RANGE check-in/check-out + units, CAPACITY date/time + seats.
 
 ## 6. Folder responsibilities (API)
 

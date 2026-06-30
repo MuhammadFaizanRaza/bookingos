@@ -4,6 +4,8 @@ A step-by-step script for demoing BookingOS to a salon or spa prospect. It uses 
 
 > **Goal:** show that one tool runs the salon's whole day — booking, calendar, payments, clients, reports — and that it looks like *their* brand, in *their* language.
 
+> This script uses the salon vertical (Lumière). The seed also ships eight other vertical demos — clinic (`medicare`), fitness (`pulse`), hotel (`azure`), rental (`gearup`), restaurant (`tavola`), events (`summit`), field services (`fixit`) and a second salon (`bloom`) — each with its own term-pack and booking mode. Swap `lumiere` for any slug to demo that industry (e.g. `/en/azure` shows date-range hotel booking).
+
 ---
 
 ## 0. Before the meeting — start it up
@@ -16,7 +18,7 @@ pnpm dev       # api → :4000, web → :3000
 Open two browser tabs:
 
 - **Marketing site:** http://localhost:3000/en
-- **Booking site:** http://localhost:3000/en/book
+- **Booking site:** http://localhost:3000/en/lumiere (the salon's public site → "Book" goes to `/en/lumiere/reserve`)
 
 Demo facts to keep handy:
 
@@ -48,7 +50,7 @@ Switch back to English before continuing.
 
 ## 3. Walk the public booking flow
 
-Go to the booking site (`/en/book`). Step through it as if you were a client:
+Go to the booking site (`/en/lumiere`, then **Book** → `/en/lumiere/reserve`). Step through it as if you were a client:
 
 1. **Pick a service** — e.g. *Women's Haircut & Style* (the catalogue, durations and prices are the salon's own).
 2. **Choose a staff member** — only staff who perform that service appear.
