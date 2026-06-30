@@ -88,6 +88,22 @@ enum BookingSource {
   ADMIN
 }
 
+// How an offering is booked. Drives the availability engine + UI.
+enum BookingMode {
+  TIME_SLOT  // provider + duration on a given day (salon, clinic, gym 1:1, field service)
+  DATE_RANGE // check-in→check-out across nights/days against an inventory (hotel, rental)
+  CAPACITY   // fixed-time session/event with limited seats (class, event, restaurant covers)
+}
+
+// What kind of thing a "resource" (StaffProfile row) represents.
+enum ResourceType {
+  HUMAN     // staff, practitioner, trainer, technician
+  ROOM      // hotel/treatment room
+  TABLE     // restaurant table
+  EQUIPMENT // rentable equipment / vehicle
+  UNIT      // generic bookable unit
+}
+
 enum SaleStatus {
   OPEN
   PAID
@@ -299,6 +315,8 @@ model StaffProfile {
   location       Location? @relation(fields: [locationId], references: [id])
   title          String?  // "Senior Stylist"
   bio            String?
+  resourceType   ResourceType @default(HUMAN) // HUMAN for staff; ROOM/TABLE/etc for non-human resources
+  capacity       Int?         // ROOM occupancy / TABLE seats
   color          String   @default("#0EA5E9") // calendar colour
   commissionRate Decimal  @default(0) @db.Decimal(5, 2) // percent
   isBookable     Boolean  @default(true)
@@ -360,10 +378,13 @@ model Service {
   category       ServiceCategory? @relation(fields: [categoryId], references: [id])
   name           String
   description    String?
-  durationMin    Int      @default(30)
+  bookingMode    BookingMode @default(TIME_SLOT)
+  durationMin    Int      @default(30) // TIME_SLOT: slot length
   bufferBeforeMin Int     @default(0)
   bufferAfterMin  Int     @default(0)
-  price          Decimal  @db.Decimal(10, 2)
+  price          Decimal  @db.Decimal(10, 2) // TIME_SLOT: per booking; DATE_RANGE: per night/day; CAPACITY: per seat/ticket
+  capacity       Int?     // CAPACITY: max seats/covers/tickets per session
+  inventory      Int?     // DATE_RANGE: number of identical units available (rooms, items)
   color          String   @default("#7C3AED")
   imageUrl       String?
   onlineBookable Boolean  @default(true)
@@ -455,8 +476,9 @@ model Appointment {
   client      Client?  @relation(fields: [clientId], references: [id])
   status      AppointmentStatus @default(PENDING)
   source      BookingSource     @default(ONLINE)
-  startsAt    DateTime
-  endsAt      DateTime
+  startsAt    DateTime // TIME_SLOT/CAPACITY: start; DATE_RANGE: check-in
+  endsAt      DateTime // TIME_SLOT/CAPACITY: end; DATE_RANGE: check-out
+  partySize   Int?     // CAPACITY: number of seats/covers/tickets in this booking
   notes       String?
   total       Decimal  @default(0) @db.Decimal(10, 2)
   cancelledAt DateTime?
@@ -481,6 +503,7 @@ model AppointmentItem {
   staff         StaffProfile? @relation(fields: [staffId], references: [id])
   startsAt      DateTime
   endsAt        DateTime
+  quantity      Int      @default(1) // CAPACITY: tickets/seats; DATE_RANGE: units booked
   price         Decimal  @db.Decimal(10, 2)
   durationMin   Int
 
