@@ -296,6 +296,29 @@ export const api = {
         tenantSlug: slug,
         query: { serviceId: input.serviceId, date: input.date, staffId: input.staffId },
       }),
+    getDateRangeAvailability: (
+      slug: string,
+      input: { serviceId: string; checkIn: string; checkOut: string; quantity?: number },
+    ) =>
+      apiFetch<DateRangeAvailability>('/public/availability/date-range', {
+        auth: false,
+        tenantSlug: slug,
+        query: {
+          serviceId: input.serviceId,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          quantity: input.quantity,
+        },
+      }),
+    getCapacityAvailability: (
+      slug: string,
+      input: { serviceId: string; start: string; quantity?: number },
+    ) =>
+      apiFetch<CapacityAvailability>('/public/availability/capacity', {
+        auth: false,
+        tenantSlug: slug,
+        query: { serviceId: input.serviceId, start: input.start, quantity: input.quantity },
+      }),
     createBooking: (
       slug: string,
       dto: {
@@ -303,7 +326,13 @@ export const api = {
         email?: string;
         phone?: string;
         notes?: string;
-        items: { serviceId: string; staffId?: string; startsAt: string }[];
+        items: {
+          serviceId: string;
+          staffId?: string;
+          startsAt: string;
+          endsAt?: string;
+          quantity?: number;
+        }[];
       },
     ) =>
       apiFetch<Appointment>('/public/bookings', {

@@ -11,13 +11,15 @@ import {
   CheckCircle2,
   Clock,
   Loader2,
+  Minus,
+  Plus,
   RefreshCw,
   Shield,
   Sparkles,
   Star,
   Users,
 } from 'lucide-react';
-import { format, addDays } from 'date-fns';
+import { format, addDays, differenceInCalendarDays, parseISO } from 'date-fns';
 import { useQueryClient } from '@tanstack/react-query';
 import { usePublicServices, usePublicStaff, useAvailability } from '@/hooks/use-salon-data';
 import { api } from '@/lib/api';
@@ -80,9 +82,32 @@ export function ReservePage({ slug, preSelectedServiceId, preSelectedStaffId, sa
   const [done, setDone] = React.useState(false);
   const [submitting, setSubmitting] = React.useState(false);
 
+  // DATE_RANGE (hotel/rental) + CAPACITY (class/event/restaurant) state
+  const [checkIn, setCheckIn] = React.useState<string>(format(addDays(new Date(), 1), 'yyyy-MM-dd'));
+  const [checkOut, setCheckOut] = React.useState<string>(format(addDays(new Date(), 3), 'yyyy-MM-dd'));
+  const [sessionTime, setSessionTime] = React.useState<string>('18:00');
+  const [quantity, setQuantity] = React.useState<number>(1);
+  const [modeAvail, setModeAvail] = React.useState<{ available: boolean; left: number; total: number } | null>(null);
+  const [modeAvailLoading, setModeAvailLoading] = React.useState(false);
+
   const selected = services.filter((s) => selectedIds.includes(s.id));
   const totalPrice = selected.reduce((sum, s) => sum + Number(s.price), 0);
   const totalDuration = selected.reduce((sum, s) => sum + s.durationMin, 0);
+
+  // Booking model is driven by the (first) selected offering.
+  const mode = selected[0]?.bookingMode ?? 'TIME_SLOT';
+  const isTimeSlot = mode === 'TIME_SLOT';
+  const nights =
+    mode === 'DATE_RANGE' && checkIn && checkOut
+      ? Math.max(1, differenceInCalendarDays(parseISO(checkOut), parseISO(checkIn)))
+      : 0;
+  const unitNoun = mode === 'DATE_RANGE' ? 'unit' : 'seat';
+  const estimatedTotal =
+    mode === 'DATE_RANGE'
+      ? totalPrice * nights * quantity
+      : mode === 'CAPACITY'
+        ? totalPrice * quantity
+        : totalPrice;
   const depositAmount = selected.reduce((s, svc) => s + (svc.depositRequired ? Number(svc.depositAmount ?? 0) : 0), 0);
   const requiresPayment = depositAmount > 0;
 
@@ -92,7 +117,7 @@ export function ReservePage({ slug, preSelectedServiceId, preSelectedStaffId, sa
     date: dateStr,
     staffId: staffId ?? undefined,
     slug,
-    enabled: step === 'time' && selectedIds.length > 0,
+    enabled: step === 'time' && selectedIds.length > 0 && isTimeSlot,
   });
   // Deduplicate by start time. For each time, prefer the slot where available:true
   // (i.e. at least one staff is free). This drives the gray-out logic below.
@@ -118,9 +143,48 @@ export function ReservePage({ slug, preSelectedServiceId, preSelectedStaffId, sa
     }
   }, [slots]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const allSteps: StepId[] = requiresPayment
-    ? ['service', 'staff', 'time', 'details', 'review', 'payment']
-    : ['service', 'staff', 'time', 'details', 'review'];
+  // ── Live availability for DATE_RANGE / CAPACITY offerings ──────────────────
+  const svcId = selectedIds[0];
+  React.useEffect(() => {
+    if (step !== 'time' || isTimeSlot || !svcId) return;
+    let cancelled = false;
+    setModeAvailLoading(true);
+    const req =
+      mode === 'DATE_RANGE'
+        ? checkIn && checkOut && checkOut > checkIn
+          ? api.public.getDateRangeAvailability(slug, {
+              serviceId: svcId,
+              checkIn: new Date(`${checkIn}T12:00:00`).toISOString(),
+              checkOut: new Date(`${checkOut}T12:00:00`).toISOString(),
+              quantity,
+            })
+          : Promise.reject(new Error('invalid range'))
+        : api.public.getCapacityAvailability(slug, {
+            serviceId: svcId,
+            start: new Date(`${format(date, 'yyyy-MM-dd')}T${sessionTime}:00`).toISOString(),
+            quantity,
+          });
+    req
+      .then((r) => {
+        if (cancelled) return;
+        setModeAvail(
+          'unitsLeft' in r
+            ? { available: r.available, left: r.unitsLeft, total: r.inventory }
+            : { available: r.available, left: r.seatsLeft, total: r.capacity },
+        );
+      })
+      .catch(() => !cancelled && setModeAvail(null))
+      .finally(() => !cancelled && setModeAvailLoading(false));
+    return () => {
+      cancelled = true;
+    };
+  }, [step, mode, isTimeSlot, svcId, checkIn, checkOut, sessionTime, date, quantity, slug]);
+
+  // TIME_SLOT picks a provider; DATE_RANGE/CAPACITY book the offering directly.
+  const baseSteps: StepId[] = isTimeSlot
+    ? ['service', 'staff', 'time', 'details', 'review']
+    : ['service', 'time', 'details', 'review'];
+  const allSteps: StepId[] = requiresPayment ? [...baseSteps, 'payment'] : baseSteps;
   const stepIndex = allSteps.indexOf(step);
 
   function goNext() { const n = allSteps[stepIndex + 1]; if (n) setStep(n); }
@@ -135,30 +199,56 @@ export function ReservePage({ slug, preSelectedServiceId, preSelectedStaffId, sa
   const canContinue =
     (step === 'service' && selectedIds.length > 0) ||
     step === 'staff' ||
-    (step === 'time' && !!slot && slot.available !== false) ||
+    (step === 'time' &&
+      (isTimeSlot
+        ? !!slot && slot.available !== false
+        : modeAvail?.available === true)) ||
     (step === 'details' && details.name && details.email) ||
     step === 'review';
 
   async function submit() {
-    // Guard: slot must still be available (could have been taken while user filled details)
-    if (!slot || slot.available === false) {
+    // Mode-specific guards (selection could have been taken while filling details)
+    if (isTimeSlot && (!slot || slot.available === false)) {
       toast.error('This slot is no longer available. Please choose another time.');
       setSlot(null);
       setStep('time');
       return;
     }
+    if (!isTimeSlot && modeAvail?.available !== true) {
+      toast.error('Those dates/seats are no longer available. Please adjust your selection.');
+      setStep('time');
+      return;
+    }
     setSubmitting(true);
     try {
+      const items = selectedIds.map((serviceId) => {
+        if (mode === 'DATE_RANGE') {
+          return {
+            serviceId,
+            startsAt: new Date(`${checkIn}T12:00:00`).toISOString(),
+            endsAt: new Date(`${checkOut}T12:00:00`).toISOString(),
+            quantity,
+          };
+        }
+        if (mode === 'CAPACITY') {
+          return {
+            serviceId,
+            startsAt: new Date(`${format(date, 'yyyy-MM-dd')}T${sessionTime}:00`).toISOString(),
+            quantity,
+          };
+        }
+        return {
+          serviceId,
+          staffId: effectiveStaffId ?? undefined,
+          startsAt: slot?.start ?? new Date(date).toISOString(),
+        };
+      });
       await api.public.createBooking(slug, {
         name: details.name,
         email: details.email || undefined,
         phone: details.phone || undefined,
         notes: details.notes || undefined,
-        items: selectedIds.map((serviceId) => ({
-          serviceId,
-          staffId: effectiveStaffId ?? undefined,
-          startsAt: slot?.start ?? new Date(date).toISOString(),
-        })),
+        items,
       });
       // Bust the availability cache so the booked slot disappears immediately
       await qc.invalidateQueries({ queryKey: ['availability'] });
@@ -255,7 +345,7 @@ export function ReservePage({ slug, preSelectedServiceId, preSelectedStaffId, sa
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white/70">Total</span>
                 <span className="font-display text-xl font-bold text-white">
-                  {formatCurrency(totalPrice, currency, locale)}
+                  {formatCurrency(estimatedTotal, currency, locale)}
                 </span>
               </div>
               {totalDuration > 0 && (
@@ -547,7 +637,23 @@ export function ReservePage({ slug, preSelectedServiceId, preSelectedStaffId, sa
 
                 {/* ── Time step ─────────────────────────────────── */}
                 {step === 'time' && (
-                  <StepShell title="Pick a date & time" desc="Select when you'd like to come in">
+                  <StepShell
+                    title={
+                      mode === 'DATE_RANGE'
+                        ? 'Select your dates'
+                        : mode === 'CAPACITY'
+                          ? 'Pick a session'
+                          : 'Pick a date & time'
+                    }
+                    desc={
+                      mode === 'DATE_RANGE'
+                        ? 'Choose check-in, check-out and how many.'
+                        : mode === 'CAPACITY'
+                          ? 'Choose a date, time and how many spots.'
+                          : "Select when you'd like to come in"
+                    }
+                  >
+                    {isTimeSlot ? (
                     <div className="flex flex-col gap-5">
                       <div className="flex justify-center">
                         <div className="rounded-2xl border bg-background p-2">
@@ -616,6 +722,76 @@ export function ReservePage({ slug, preSelectedServiceId, preSelectedStaffId, sa
                         )}
                       </div>
                     </div>
+                    ) : mode === 'DATE_RANGE' ? (
+                      <div className="flex flex-col gap-4">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1.5">
+                            <Label>Check-in</Label>
+                            <Input
+                              type="date"
+                              min={format(new Date(), 'yyyy-MM-dd')}
+                              value={checkIn}
+                              onChange={(e) => setCheckIn(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label>Check-out</Label>
+                            <Input
+                              type="date"
+                              min={checkIn}
+                              value={checkOut}
+                              onChange={(e) => setCheckOut(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between rounded-xl border bg-background px-4 py-3">
+                          <div>
+                            <p className="text-sm font-medium">Units</p>
+                            <p className="text-xs text-muted-foreground">
+                              {nights} night{nights === 1 ? '' : 's'}
+                            </p>
+                          </div>
+                          <QtyStepper value={quantity} onChange={setQuantity} />
+                        </div>
+                        <AvailabilityBadge
+                          loading={modeAvailLoading}
+                          avail={modeAvail}
+                          unitNoun={unitNoun}
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-4">
+                        <div className="flex justify-center">
+                          <div className="rounded-2xl border bg-background p-2">
+                            <Calendar
+                              mode="single"
+                              selected={date}
+                              onSelect={(d) => { if (d) setDate(d); }}
+                              disabled={{ before: new Date() }}
+                            />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1.5">
+                            <Label>Time</Label>
+                            <Input
+                              type="time"
+                              value={sessionTime}
+                              onChange={(e) => setSessionTime(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label>Guests / tickets</Label>
+                            <QtyStepper value={quantity} onChange={setQuantity} />
+                          </div>
+                        </div>
+                        <AvailabilityBadge
+                          loading={modeAvailLoading}
+                          avail={modeAvail}
+                          unitNoun={unitNoun}
+                        />
+                      </div>
+                    )}
                   </StepShell>
                 )}
 
@@ -686,7 +862,7 @@ export function ReservePage({ slug, preSelectedServiceId, preSelectedStaffId, sa
                         <div className="flex items-center justify-between pt-3">
                           <span className="text-sm text-muted-foreground">Total</span>
                           <span className="font-display text-lg font-bold">
-                            {formatCurrency(totalPrice, currency, locale)}
+                            {formatCurrency(estimatedTotal, currency, locale)}
                           </span>
                         </div>
                       </div>
@@ -702,22 +878,48 @@ export function ReservePage({ slug, preSelectedServiceId, preSelectedStaffId, sa
                             </div>
                           </div>
                         )}
-                        <div className="flex items-center gap-2.5 rounded-xl border bg-background p-3">
-                          <Users className="h-4 w-4 shrink-0 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">Specialist</p>
-                            <p className="text-sm font-medium">
-                              {currentStaff?.user.name ?? 'Any available'}
-                            </p>
+                        {mode === 'DATE_RANGE' && (
+                          <div className="flex items-center gap-2.5 rounded-xl border bg-background p-3">
+                            <CalendarIcon className="h-4 w-4 shrink-0 text-primary" />
+                            <div>
+                              <p className="text-xs text-muted-foreground">Dates</p>
+                              <p className="text-sm font-medium">
+                                {format(parseISO(checkIn), 'MMM d')} → {format(parseISO(checkOut), 'MMM d')} · {nights} night{nights === 1 ? '' : 's'} × {quantity}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex items-center gap-2.5 rounded-xl border bg-background p-3">
-                          <Clock className="h-4 w-4 shrink-0 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">Duration</p>
-                            <p className="text-sm font-medium">{minutesToLabel(totalDuration)}</p>
+                        )}
+                        {mode === 'CAPACITY' && (
+                          <div className="flex items-center gap-2.5 rounded-xl border bg-background p-3">
+                            <CalendarIcon className="h-4 w-4 shrink-0 text-primary" />
+                            <div>
+                              <p className="text-xs text-muted-foreground">Session</p>
+                              <p className="text-sm font-medium">
+                                {format(date, 'EEE, MMM d')} · {sessionTime} · {quantity} spot{quantity === 1 ? '' : 's'}
+                              </p>
+                            </div>
                           </div>
-                        </div>
+                        )}
+                        {isTimeSlot && (
+                          <div className="flex items-center gap-2.5 rounded-xl border bg-background p-3">
+                            <Users className="h-4 w-4 shrink-0 text-primary" />
+                            <div>
+                              <p className="text-xs text-muted-foreground">Specialist</p>
+                              <p className="text-sm font-medium">
+                                {currentStaff?.user.name ?? 'Any available'}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                        {isTimeSlot && (
+                          <div className="flex items-center gap-2.5 rounded-xl border bg-background p-3">
+                            <Clock className="h-4 w-4 shrink-0 text-primary" />
+                            <div>
+                              <p className="text-xs text-muted-foreground">Duration</p>
+                              <p className="text-sm font-medium">{minutesToLabel(totalDuration)}</p>
+                            </div>
+                          </div>
+                        )}
                         <div className="flex items-center gap-2.5 rounded-xl border bg-background p-3">
                           <Check className="h-4 w-4 shrink-0 text-primary" />
                           <div>
@@ -797,5 +999,83 @@ function StepShell({
       <p className="mt-0.5 text-sm text-muted-foreground">{desc}</p>
       <div className="mt-5">{children}</div>
     </div>
+  );
+}
+
+function QtyStepper({
+  value,
+  onChange,
+  min = 1,
+  max = 99,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+  min?: number;
+  max?: number;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        className="h-9 w-9"
+        disabled={value <= min}
+        onClick={() => onChange(Math.max(min, value - 1))}
+      >
+        <Minus className="h-4 w-4" />
+      </Button>
+      <span className="w-8 text-center text-sm font-semibold tabular-nums">{value}</span>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        className="h-9 w-9"
+        disabled={value >= max}
+        onClick={() => onChange(Math.min(max, value + 1))}
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+}
+
+function AvailabilityBadge({
+  loading,
+  avail,
+  unitNoun,
+}: {
+  loading: boolean;
+  avail: { available: boolean; left: number; total: number } | null;
+  unitNoun: string;
+}) {
+  if (loading) {
+    return (
+      <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        Checking availability…
+      </p>
+    );
+  }
+  if (!avail) {
+    return (
+      <p className="rounded-xl border border-dashed p-3 text-center text-sm text-muted-foreground">
+        Adjust your selection to check availability.
+      </p>
+    );
+  }
+  if (!avail.available) {
+    return (
+      <p className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-center text-sm text-destructive">
+        Not available — only {Math.max(0, avail.left)} of {avail.total} {unitNoun}
+        {avail.left === 1 ? '' : 's'} left.
+      </p>
+    );
+  }
+  return (
+    <p className="rounded-xl border border-emerald-300 bg-emerald-50 p-3 text-center text-sm text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+      Available — {avail.left} of {avail.total} {unitNoun}
+      {avail.left === 1 ? '' : 's'} left.
+    </p>
   );
 }
