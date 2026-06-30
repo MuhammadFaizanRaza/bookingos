@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
+  IsEnum,
   IsHexColor,
   IsInt,
   IsNotEmpty,
@@ -12,6 +13,7 @@ import {
   IsUrl,
   Min,
 } from 'class-validator';
+import { BookingMode } from '@bookingos/database';
 
 export class CreateServiceDto {
   @ApiProperty({ example: "Women's Haircut & Style" })
@@ -28,6 +30,29 @@ export class CreateServiceDto {
   @IsOptional()
   @IsString()
   categoryId?: string;
+
+  @ApiPropertyOptional({
+    enum: BookingMode,
+    default: BookingMode.TIME_SLOT,
+    description: 'Booking model: TIME_SLOT | DATE_RANGE | CAPACITY',
+  })
+  @IsOptional()
+  @IsEnum(BookingMode)
+  bookingMode?: BookingMode;
+
+  @ApiPropertyOptional({ description: 'CAPACITY: max seats/covers/tickets per session' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  capacity?: number;
+
+  @ApiPropertyOptional({ description: 'DATE_RANGE: number of identical units available' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  inventory?: number;
 
   @ApiProperty({ example: 60, description: 'Duration in minutes' })
   @Type(() => Number)

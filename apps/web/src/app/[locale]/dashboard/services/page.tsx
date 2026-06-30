@@ -6,7 +6,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Clock, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useServiceCategories, useServices, useTenant } from '@/hooks/use-salon-data';
 import { api } from '@/lib/api';
-import type { Service, ServiceCategory } from '@/lib/types';
+import type { BookingMode, Service, ServiceCategory } from '@/lib/types';
 import { formatCurrency, minutesToLabel } from '@/lib/utils';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { ServiceGroupsSkeleton } from '@/components/dashboard/loaders';
@@ -192,8 +192,11 @@ function ServiceDialog({
 
   const [name, setName] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [bookingMode, setBookingMode] = React.useState<BookingMode>('TIME_SLOT');
   const [durationMin, setDurationMin] = React.useState(30);
   const [price, setPrice] = React.useState(0);
+  const [capacity, setCapacity] = React.useState(10);
+  const [inventory, setInventory] = React.useState(1);
   const [color, setColor] = React.useState('#7C3AED');
   const [onlineBookable, setOnlineBookable] = React.useState(true);
   const [categoryId, setCategoryId] = React.useState<string>('');
@@ -205,8 +208,11 @@ function ServiceDialog({
     if (open) {
       setName(service?.name ?? '');
       setDescription(service?.description ?? '');
+      setBookingMode(service?.bookingMode ?? 'TIME_SLOT');
       setDurationMin(service?.durationMin ?? 30);
       setPrice(service ? Number(service.price) : 0);
+      setCapacity(service?.capacity ?? 10);
+      setInventory(service?.inventory ?? 1);
       setColor(service?.color ?? '#7C3AED');
       setOnlineBookable(service?.onlineBookable ?? true);
       setCategoryId(service?.categoryId ?? service?.category?.id ?? '');
@@ -246,8 +252,11 @@ function ServiceDialog({
     const payload = {
       name: name.trim(),
       description,
+      bookingMode,
       durationMin,
       price,
+      capacity: bookingMode === 'CAPACITY' ? capacity : undefined,
+      inventory: bookingMode === 'DATE_RANGE' ? inventory : undefined,
       color,
       onlineBookable,
       categoryId: categoryId || undefined,
@@ -257,8 +266,11 @@ function ServiceDialog({
       id: service?.id ?? `svc_${Date.now()}`,
       name: payload.name,
       description: payload.description || null,
+      bookingMode: payload.bookingMode,
       durationMin: payload.durationMin,
       price: payload.price,
+      capacity: payload.capacity ?? null,
+      inventory: payload.inventory ?? null,
       color: payload.color,
       categoryId: categoryId || null,
       category: cat,
@@ -371,20 +383,54 @@ function ServiceDialog({
               </div>
             )}
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="s-mode">Booking type</Label>
+            <Select
+              value={bookingMode}
+              onValueChange={(v) => setBookingMode(v as BookingMode)}
+            >
+              <SelectTrigger id="s-mode">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="TIME_SLOT">
+                  Appointment — time slot (staff + duration)
+                </SelectItem>
+                <SelectItem value="DATE_RANGE">
+                  Date range — per night/day (rooms, rentals)
+                </SelectItem>
+                <SelectItem value="CAPACITY">
+                  Capacity — seats per session (classes, events, tables)
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="grid grid-cols-2 gap-4">
+            {bookingMode !== 'DATE_RANGE' && (
+              <div className="space-y-2">
+                <Label htmlFor="s-duration">
+                  {bookingMode === 'CAPACITY'
+                    ? 'Session length (min)'
+                    : `${t('duration')} (min)`}
+                </Label>
+                <Input
+                  id="s-duration"
+                  type="number"
+                  min={5}
+                  step={5}
+                  value={durationMin}
+                  onChange={(e) => setDurationMin(Number(e.target.value))}
+                />
+              </div>
+            )}
             <div className="space-y-2">
-              <Label htmlFor="s-duration">{t('duration')} (min)</Label>
-              <Input
-                id="s-duration"
-                type="number"
-                min={5}
-                step={5}
-                value={durationMin}
-                onChange={(e) => setDurationMin(Number(e.target.value))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="s-price">{t('price')}</Label>
+              <Label htmlFor="s-price">
+                {bookingMode === 'DATE_RANGE'
+                  ? `${t('price')} / night`
+                  : bookingMode === 'CAPACITY'
+                    ? `${t('price')} / seat`
+                    : t('price')}
+              </Label>
               <Input
                 id="s-price"
                 type="number"
@@ -394,6 +440,32 @@ function ServiceDialog({
                 onChange={(e) => setPrice(Number(e.target.value))}
               />
             </div>
+            {bookingMode === 'CAPACITY' && (
+              <div className="space-y-2">
+                <Label htmlFor="s-capacity">Seats per session</Label>
+                <Input
+                  id="s-capacity"
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={capacity}
+                  onChange={(e) => setCapacity(Number(e.target.value))}
+                />
+              </div>
+            )}
+            {bookingMode === 'DATE_RANGE' && (
+              <div className="space-y-2">
+                <Label htmlFor="s-inventory">Units available</Label>
+                <Input
+                  id="s-inventory"
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={inventory}
+                  onChange={(e) => setInventory(Number(e.target.value))}
+                />
+              </div>
+            )}
           </div>
           <div className="space-y-2">
             <Label>{t('color')}</Label>
