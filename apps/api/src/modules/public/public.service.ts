@@ -91,6 +91,20 @@ export class PublicService {
     return this.bookings.getAvailability(tenantId, params);
   }
 
+  checkDateRange(
+    tenantId: string,
+    params: { serviceId: string; checkIn: Date; checkOut: Date; quantity?: number },
+  ) {
+    return this.bookings.checkDateRange(tenantId, params);
+  }
+
+  checkCapacity(
+    tenantId: string,
+    params: { serviceId: string; start: Date; quantity?: number },
+  ) {
+    return this.bookings.checkCapacity(tenantId, params);
+  }
+
   /** Guest booking: find-or-create the client by email/phone, then book. */
   async createBooking(tenantId: string, dto: PublicBookingDto) {
     if (!dto.email && !dto.phone) {
@@ -125,6 +139,8 @@ export class PublicService {
         serviceId: i.serviceId,
         staffId: i.staffId,
         startsAt: i.startsAt,
+        endsAt: i.endsAt,
+        quantity: i.quantity,
       })),
     });
   }

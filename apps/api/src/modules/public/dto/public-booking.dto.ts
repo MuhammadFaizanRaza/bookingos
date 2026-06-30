@@ -5,9 +5,11 @@ import {
   IsArray,
   IsDate,
   IsEmail,
+  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
+  Min,
   ValidateNested,
 } from 'class-validator';
 
@@ -29,10 +31,31 @@ export class PublicBookingItemDto {
   @IsString()
   staffId?: string;
 
-  @ApiProperty({ example: '2026-06-20T13:00:00.000Z' })
+  @ApiProperty({
+    example: '2026-06-20T13:00:00.000Z',
+    description: 'Session start / check-in (ISO 8601)',
+  })
   @Transform(toUtcDate)
   @IsDate()
   startsAt!: Date;
+
+  @ApiPropertyOptional({
+    example: '2026-06-23T11:00:00.000Z',
+    description: 'DATE_RANGE only: check-out (ISO 8601)',
+  })
+  @IsOptional()
+  @Transform(toUtcDate)
+  @IsDate()
+  endsAt?: Date;
+
+  @ApiPropertyOptional({
+    default: 1,
+    description: 'Units/seats/tickets (DATE_RANGE inventory, CAPACITY seats)',
+  })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  quantity?: number;
 }
 
 export class PublicBookingDto {

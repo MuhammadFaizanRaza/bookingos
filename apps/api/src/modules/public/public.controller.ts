@@ -4,7 +4,11 @@ import { Public } from '../../auth/decorators/public.decorator';
 import { CurrentTenant } from '../../tenant/current-tenant.decorator';
 import { PublicService } from './public.service';
 import { PublicBookingDto } from './dto/public-booking.dto';
-import { AvailabilityQueryDto } from '../bookings/dto/booking.dto';
+import {
+  AvailabilityQueryDto,
+  CapacityAvailabilityDto,
+  DateRangeAvailabilityDto,
+} from '../bookings/dto/booking.dto';
 
 @ApiTags('public')
 @Public()
@@ -43,8 +47,35 @@ export class PublicController {
     return this.publicSvc.getAvailability(tenantId, query);
   }
 
+  @Get('availability/date-range')
+  @ApiOperation({ summary: 'Units left for a DATE_RANGE offering (hotel/rental)' })
+  dateRangeAvailability(
+    @CurrentTenant() tenantId: string,
+    @Query() query: DateRangeAvailabilityDto,
+  ) {
+    return this.publicSvc.checkDateRange(tenantId, {
+      serviceId: query.serviceId,
+      checkIn: query.checkIn,
+      checkOut: query.checkOut,
+      quantity: query.quantity,
+    });
+  }
+
+  @Get('availability/capacity')
+  @ApiOperation({ summary: 'Seats left for a CAPACITY offering session (class/event)' })
+  capacityAvailability(
+    @CurrentTenant() tenantId: string,
+    @Query() query: CapacityAvailabilityDto,
+  ) {
+    return this.publicSvc.checkCapacity(tenantId, {
+      serviceId: query.serviceId,
+      start: query.start,
+      quantity: query.quantity,
+    });
+  }
+
   @Get('locations')
-  @ApiOperation({ summary: 'Active salon locations' })
+  @ApiOperation({ summary: 'Active locations' })
   locations(@CurrentTenant() tenantId: string) {
     return this.publicSvc.getLocations(tenantId);
   }
