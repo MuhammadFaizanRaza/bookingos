@@ -1,16 +1,35 @@
 # BookingOS — Claude Code Reference
 
-Multi-tenant salon/spa management SaaS (global). Turborepo + pnpm monorepo.
+Multi-tenant, **multi-vertical, multi-model** booking/appointment SaaS (global). One shared schema + booking engine serves any industry (salon, clinic, fitness, hotel, rental, restaurant, events, field services). Turborepo + pnpm monorepo. Packages are `@bookingos/*` (was `@salonos/*` before the rebrand).
 
 ## Workspace layout
 
 ```
-apps/api/          NestJS 11, port 4000, prefix /api/v1, Swagger at /docs
-apps/web/          Next.js 15 App Router, port 3000
-packages/database/ Prisma 6 client + forTenant() isolation layer
-docs/              ARCHITECTURE.md, FEATURES.md, ROADMAP.md, API.md, SETUP.md
+apps/api/          NestJS 11, port 4000, prefix /api/v1, Swagger at /docs   (@bookingos/api)
+apps/web/          Next.js 15 App Router, port 3000                          (@bookingos/web)
+packages/database/ Prisma 6 client + forTenant() isolation layer            (@bookingos/database)
+docs/              ARCHITECTURE.md, FEATURES.md, ROADMAP.md, API.md, SETUP.md, MULTI-TENANCY.md, DEMO.md
 docker-compose.yml Postgres 16 + Redis 7
 ```
+
+## Verticals & term-packs
+
+- A tenant picks a `Vertical` at signup → drives UI terminology and default booking mode. Engine is identical across verticals.
+- `Vertical` enum: `SALON | CLINIC | FITNESS | HOTEL | RENTAL | RESTAURANT | EVENTS | SERVICES | GENERAL`
+- Term-packs in `apps/web/src/lib/verticals.ts` relabel the canonical concepts **resource / offering / category / customer / booking / bookVerb** (e.g. SALON: Staff/Service/Client/Appointment; HOTEL: Room/Room Type/Guest/Reservation).
+- `useTerms()` (`apps/web/src/hooks/use-terms.ts`) resolves the current tenant's term-pack; the dashboard sidebar + screens use it. Falls back to GENERAL.
+
+## Booking modes (multi-model)
+
+Each offering (`Service`) has a `bookingMode`; booking creation + availability dispatch on it.
+
+| Mode         | Booking shape                                  | Industries                        | Availability source                          |
+| ------------ | ---------------------------------------------- | --------------------------------- | -------------------------------------------- |
+| `TIME_SLOT`  | provider + duration on a day (buffers, hours)  | salon, clinic, gym 1:1, services  | per-staff free slots (`getSlots`)            |
+| `DATE_RANGE` | check-in→check-out vs finite `inventory` units | hotel, rental                     | overlapping units vs `Service.inventory` (`checkDateRange`) |
+| `CAPACITY`   | fixed session with limited seats (`quantity`)  | class, event, restaurant covers   | seats taken vs `Service.capacity` (`checkCapacity`)         |
+
+All three engines live in `apps/api/src/modules/bookings/availability.service.ts`; `BookingsService.create()` dispatches per line item on `service.bookingMode`.
 
 ## Common commands
 
@@ -19,7 +38,7 @@ pnpm dev            # start api + web in watch mode
 pnpm setup          # one-shot: docker:up + migrate + seed
 pnpm docker:up      # Postgres + Redis containers
 pnpm db:migrate     # run pending migrations
-pnpm db:seed        # seed Lumière demo salon
+pnpm db:seed        # seed demo tenants (Lumière + Bloom)
 pnpm db:studio      # Prisma Studio GUI
 pnpm build          # build all packages via Turborepo
 pnpm lint           # lint all workspaces
@@ -48,7 +67,7 @@ ROOT_DOMAIN=bookingos.local
 - Tenant resolved from `x-tenant-slug` header → subdomain → query param
 - `forTenant(tenantId)` Prisma `$extends` auto-injects `tenantId` on all reads/writes
 - Every tenant-scoped model has `tenantId` as first field + composite indexes
-- Demo tenant: slug `lumiere`, owner login `owner@lumiere.demo` / `Passw0rd!`
+- Demo tenants (one per vertical, password `Passw0rd!`): `lumiere`/`bloom` (SALON), `medicare` (CLINIC), `pulse` (FITNESS/CAPACITY), `azure` (HOTEL/DATE_RANGE), `gearup` (RENTAL/DATE_RANGE), `tavola` (RESTAURANT/CAPACITY), `summit` (EVENTS/CAPACITY), `fixit` (SERVICES). Owner = `owner@<slug>.demo`; each resource is also a login.
 
 ## API modules (apps/api/src/modules/)
 
@@ -58,9 +77,9 @@ ROOT_DOMAIN=bookingos.local
 | tenants   | GET/PATCH /tenant                                                                   |
 | locations | CRUD /locations                                                                     |
 | staff     | CRUD /staff, working hours, time-off                                                |
-| services  | CRUD /services, categories                                                          |
+| services  | CRUD /services (offerings: bookingMode, capacity, inventory), categories            |
 | clients   | CRUD /clients (CRM, search, tags, loyalty)                                          |
-| bookings  | GET/POST /bookings, PATCH /bookings/:id/reschedule                                  |
+| bookings  | GET/POST /bookings, /bookings/availability (+ /availability/date-range, /availability/capacity), PATCH /bookings/:id/reschedule, /cancel, /status |
 | products  | CRUD /products (inventory, SKU, stock)                                              |
 | sales     | POST /sales (line items, discounts, tips, tax)                                      |
 | payments  | POST /payments/intent, /payments/cash, refunds                                      |
@@ -77,24 +96,24 @@ Roles: `SUPER_ADMIN | OWNER | MANAGER | STAFF | RECEPTIONIST | CLIENT`
 
 ## Prisma data models (packages/database/prisma/schema.prisma)
 
-28 models. Key ones:
+28 models. **New multi-vertical/multi-model enums:** `Vertical` (SALON/CLINIC/FITNESS/HOTEL/RENTAL/RESTAURANT/EVENTS/SERVICES/GENERAL), `BookingMode` (TIME_SLOT/DATE_RANGE/CAPACITY), `ResourceType` (HUMAN/ROOM/TABLE/EQUIPMENT/UNIT). Key models:
 
 | Model             | Purpose                                                                                    |
 | ----------------- | ------------------------------------------------------------------------------------------ |
-| Tenant            | Root org — slug, plan, status, stripeCustomerId                                            |
+| Tenant            | Root org — slug, plan, status, stripeCustomerId, **vertical** (term-pack/defaults)         |
 | Subscription      | Stripe subscription per tenant                                                             |
 | User              | Identity with role + tenantId                                                              |
-| StaffProfile      | Staff details, commission, schedule link                                                   |
+| StaffProfile      | Bookable resource — details, commission; **resourceType** (HUMAN/ROOM/TABLE/…), **capacity** (room occupancy/table seats) |
 | WorkingHours      | Per-staff, dayOfWeek, startMin/endMin (minutes from midnight)                              |
 | TimeOff           | Staff vacation blocks                                                                      |
-| Location          | Salon branches with timezone override                                                      |
-| ServiceCategory   | Grouping for services                                                                      |
-| Service           | Bookable service (durationMin, buffers, price, deposit)                                    |
+| Location          | Branches with timezone override                                                            |
+| ServiceCategory   | Grouping for services/offerings                                                            |
+| Service           | Bookable offering (durationMin, buffers, price, deposit); **bookingMode**, **capacity** (CAPACITY seats), **inventory** (DATE_RANGE units) |
 | Product           | Retail inventory (SKU, stockQty, lowStockAt)                                               |
 | InventoryMovement | Stock tracking                                                                             |
 | Client            | CRM contact (tags, loyaltyPoints, marketingOptIn)                                          |
-| Appointment       | Booking lifecycle (PENDING→CONFIRMED→CHECKED_IN→IN_PROGRESS→COMPLETED + CANCELLED/NO_SHOW) |
-| AppointmentItem   | Per-service line within an appointment                                                     |
+| Appointment       | Booking lifecycle (PENDING→CONFIRMED→CHECKED_IN→IN_PROGRESS→COMPLETED + CANCELLED/NO_SHOW); **partySize** (CAPACITY) |
+| AppointmentItem   | Per-offering line within a booking; **quantity** (CAPACITY seats / DATE_RANGE units)        |
 | Sale              | POS transaction (OPEN/PAID/PARTIALLY_REFUNDED/REFUNDED/VOID)                               |
 | SaleItem          | Sale line (SERVICE or PRODUCT)                                                             |
 | Payment           | Payment record with Stripe PaymentIntent link                                              |
@@ -136,10 +155,11 @@ i18n: **en / ur / ar** (ur + ar are RTL). Translations at `src/messages/{en,ur,a
 
 ## Feature status
 
-**Done:** All 16 API modules, Stripe (PaymentIntents, Connect, Checkout, Portal, webhooks), marketing landing, auth, public booking, dashboard shell, i18n, availability algorithm, POS, inventory, reports, CRM.
+**Done:** All 16 API modules, Stripe (PaymentIntents, Connect, Checkout, Portal, webhooks), marketing landing, auth, public booking, dashboard shell, i18n, three availability engines (TIME_SLOT/DATE_RANGE/CAPACITY), vertical term-packs + signup picker, POS, inventory, reports, CRM.
 
 **Partial / scaffolded:**
 
+- Public booking site (`/public/*`) currently exposes TIME_SLOT availability only; DATE_RANGE/CAPACITY availability are on the authenticated `/bookings/availability/*` routes
 - Web dashboard falls back to mock data where API is not wired
 - Stripe Elements simulated until real keys configured
 - Notifications (email/SMS/push) — models exist, sending not wired
