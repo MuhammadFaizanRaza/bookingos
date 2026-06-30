@@ -6,7 +6,9 @@
 import type {
   Appointment,
   AuthResponse,
+  CapacityAvailability,
   Client,
+  DateRangeAvailability,
   Location,
   Paginated,
   PlanUsage,
@@ -327,11 +329,49 @@ export const api = {
           staffId: input.staffId,
         },
       }),
+    dateRangeAvailability: (input: {
+      serviceId: string;
+      checkIn: string;
+      checkOut: string;
+      quantity?: number;
+      tenantSlug?: string;
+    }) =>
+      apiFetch<DateRangeAvailability>('/bookings/availability/date-range', {
+        auth: !input.tenantSlug,
+        tenantSlug: input.tenantSlug,
+        query: {
+          serviceId: input.serviceId,
+          checkIn: input.checkIn,
+          checkOut: input.checkOut,
+          quantity: input.quantity,
+        },
+      }),
+    capacityAvailability: (input: {
+      serviceId: string;
+      start: string;
+      quantity?: number;
+      tenantSlug?: string;
+    }) =>
+      apiFetch<CapacityAvailability>('/bookings/availability/capacity', {
+        auth: !input.tenantSlug,
+        tenantSlug: input.tenantSlug,
+        query: {
+          serviceId: input.serviceId,
+          start: input.start,
+          quantity: input.quantity,
+        },
+      }),
     create: (input: {
       clientId?: string;
       notes?: string;
       source?: string;
-      items: { serviceId: string; staffId?: string; startsAt: string }[];
+      items: {
+        serviceId: string;
+        staffId?: string;
+        startsAt: string;
+        endsAt?: string;
+        quantity?: number;
+      }[];
       tenantSlug?: string;
     }) =>
       apiFetch<Appointment>('/bookings', {

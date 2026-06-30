@@ -2,6 +2,10 @@
 
 export type Plan = 'STARTER' | 'PRO' | 'BUSINESS';
 
+export type BookingMode = 'TIME_SLOT' | 'DATE_RANGE' | 'CAPACITY';
+
+export type ResourceType = 'HUMAN' | 'ROOM' | 'TABLE' | 'EQUIPMENT' | 'UNIT';
+
 export type Vertical =
   | 'SALON'
   | 'CLINIC'
@@ -92,8 +96,11 @@ export interface Service {
   id: string;
   name: string;
   description?: string | null;
+  bookingMode?: BookingMode;
   durationMin: number;
   price: number | string;
+  capacity?: number | null; // CAPACITY: max seats/covers/tickets per session
+  inventory?: number | null; // DATE_RANGE: identical units available
   color: string;
   categoryId?: string | null;
   category?: { id: string; name: string } | null;
@@ -102,6 +109,18 @@ export interface Service {
   depositRequired: boolean;
   depositAmount?: number | string | null;
   isActive: boolean;
+}
+
+export interface DateRangeAvailability {
+  available: boolean;
+  unitsLeft: number;
+  inventory: number;
+}
+
+export interface CapacityAvailability {
+  available: boolean;
+  seatsLeft: number;
+  capacity: number;
 }
 
 export interface ServiceCategory {
