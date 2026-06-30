@@ -157,7 +157,8 @@ Every offering (`Service`) declares a `bookingMode`; availability and booking cr
 
 - Three plans — **Starter / Pro / Business** — sold via Stripe Checkout, managed via the Stripe Customer Portal.
 - Signup creates a TRIAL subscription; subscription state stays in sync via webhooks.
-- **Partial:** plans are modelled and billed, but per-plan caps (staff/locations/features) are not yet enforced server-side.
+- **Done:** per-plan **staff & location caps are enforced server-side** — `StaffService.create` and `LocationsService.create` reject (403) when the tenant is at its `PLAN_LIMITS` ceiling and prompt to upgrade.
+- **Partial:** per-plan *feature* gating (e.g. reports/inventory on higher tiers) is enforced in the web UI (`plans.ts`) but not yet on every API route.
 
 **API:** `GET /billing/subscription`, `POST /billing/checkout`, `POST /billing/portal`, `POST /webhooks/stripe`
 **Web:** landing `/#pricing`, `/dashboard/settings`

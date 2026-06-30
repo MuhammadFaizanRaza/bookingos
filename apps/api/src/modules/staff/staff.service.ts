@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,6 +8,7 @@ import { Prisma, Role, UserStatus } from '@bookingos/database';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../../database/prisma.service';
 import { TenantService } from '../../database/tenant.service';
+import { PLAN_LIMITS } from '../billing/billing.service';
 import {
   CreateStaffDto,
   CreateTimeOffDto,
@@ -21,8 +23,26 @@ export class StaffService {
     private readonly prisma: PrismaService,
   ) {}
 
+  /** Blocks creating staff beyond the tenant's plan limit. */
+  private async assertWithinPlanLimit(tenantId: string) {
+    const tenant = await this.prisma.client.tenant.findUniqueOrThrow({
+      where: { id: tenantId },
+      select: { plan: true },
+    });
+    const limit = PLAN_LIMITS[tenant.plan].maxStaff;
+    const count = await this.prisma.client.staffProfile.count({
+      where: { tenantId },
+    });
+    if (count >= limit) {
+      throw new ForbiddenException(
+        `Your ${tenant.plan} plan allows up to ${limit} staff member(s). Upgrade your plan to add more.`,
+      );
+    }
+  }
+
   /** Creates a User (role STAFF) + linked StaffProfile in one transaction. */
   async create(tenantId: string, dto: CreateStaffDto) {
+    await this.assertWithinPlanLimit(tenantId);
     const { name, email, password, phone, serviceIds, ...profile } = dto;
     const passwordHash = password ? await bcrypt.hash(password, 10) : null;
 

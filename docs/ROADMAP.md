@@ -31,7 +31,7 @@ An honest account of what's fully implemented, what's scaffolded or partial, and
 - **Stripe Elements is simulated until configured.** When `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` is unset/placeholder (`pk_test_xxx`), the booking payment step renders a **simulated** card form (`lib/stripe.ts`). Wire real keys + the server `POST /payments/intent` `clientSecret` into Stripe Elements to take live cards.
 - **Notifications (email / SMS / WhatsApp).** Models, channels and `MailService` / `NotificationService` exist and config slots are present (SMTP, Twilio), but appointment-reminder scheduling/sending is not fully wired.
 - **Redis.** Provisioned via Docker for cache/queues but not yet driving background jobs (reminders, async webhook processing).
-- **Plan feature-gating.** Plans (Starter/Pro/Business) and billing are modelled and sold, but per-plan feature limits (e.g. staff/location caps) are not strictly enforced in code yet.
+- **Plan feature-gating.** Staff/location caps are now enforced server-side (403 + upgrade prompt at the plan ceiling). Per-plan *feature* gating (reports/inventory/etc.) is still UI-only and not yet enforced on every API route.
 - **File storage (S3).** Env slots exist for logo/image uploads; the upload pipeline is not yet implemented.
 
 ---
